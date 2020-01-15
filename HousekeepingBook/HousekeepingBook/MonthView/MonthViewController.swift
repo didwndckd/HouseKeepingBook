@@ -12,29 +12,51 @@ import UIKit
 
 class MonthViewController: UIViewController {
     
-    
-
-    private let calender = JTACMonthView()
     private let budgetButton = UIButton(type: .system)
-    private var monthData = DataPicker.shared.getMonthData(date: Date())
+    
+    private let calender = JTACMonthView()
     private var date = Date()
+    private let calendarData = Calendar(identifier: .gregorian)
     
+    private var year = 0
+    private var _month: Int = 0
+    private var month: Int {
+        get {
+            return _month
+        }
+        set {
+            if newValue > 12 {
+                _month = 1
+                year += 1
+            }else if newValue < 1 {
+                _month = 12
+                year -= 1
+            }else {
+                _month = newValue
+            }
+        }
+    }
     
+    var dayBudget = 0
     var budget: Int? {
         didSet {
             guard let afterBindingBuget = budget else {
                 budgetButton.setTitle("예산을 등록하세요.", for: .normal)
                 return
-                
             }
-            guard let budgetButtonTitleText = DataPicker.shared.moneyForamt(price: afterBindingBuget) else { return }
+            guard let budgetButtonTitleText = DataPicker.shared.moneyForamt(price: afterBindingBuget)
+                else { return }
+            
             budgetButton.setTitle("\(budgetButtonTitleText) 원", for: .normal)
         }
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+        
         view.backgroundColor = .systemBackground
         calender.backgroundColor = .systemBackground
         calender.calendarDataSource = self
@@ -46,8 +68,16 @@ class MonthViewController: UIViewController {
         
         budget = DataPicker.shared.getMonthBudget(month: date)
         
+        setThisMonth()
+        
+        getDateBudget()
+        
         setupUI()
+    
+        
     }
+    
+    
     
     @objc private func didTapBudgetButton() {
         // 예산 버튼 클릭
@@ -58,6 +88,31 @@ class MonthViewController: UIViewController {
         budgetViewController.budget = budget
         budgetViewController.date = date
         present(budgetViewController, animated: true)
+    }
+    
+    private func getDateBudget() {
+        let start = DateComponents(calendar: calendarData, year: year, month: month, day: 1)
+        month += 1
+        let end = DateComponents(calendar: calendarData, year: year, month: month, day: 1)
+        month -= 1
+        let numberOfDays = calendarData.dateComponents([.day], from: start, to: end)
+        
+        guard let monthBudget = budget else { return }
+        guard let days = numberOfDays.day else { return }
+        dayBudget = monthBudget / days
+    }
+    
+    private func setThisMonth() {
+        let today = Date()
+        
+        let yearToString = DataPicker.shared.setFormatter(date: today, format: "yyyy")
+        let monthToString = DataPicker.shared.setFormatter(date: today, format: "MM")
+        
+        print(monthToString)
+        guard let yearToInt = Int(yearToString) else { return }
+        year = yearToInt
+        guard let monthToInt = Int(monthToString) else { return }
+        month = monthToInt
     }
     
 

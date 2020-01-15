@@ -8,11 +8,19 @@
 
 import UIKit
 
+protocol DayCostViewControllerDelegat: class {
+    func checkAction(cost: CostModel)
+}
+
 // 일별 추가버튼 클릭시
 class DayCostViewController: UIViewController {
   
+    
+    weak var delegate: DayCostViewControllerDelegat?
+    var tagModel: TagModel?
+    
   // MARK: - CollectionViewMetric
-  
+    
   private enum Metric {
     static let lineSpacing: CGFloat = 30
     static let itemSpacing: CGFloat = 3
@@ -118,9 +126,24 @@ class DayCostViewController: UIViewController {
     
   }
 
-      @objc private func didTapButton(_ sender: UIButton) {
+      @objc private func didTapButton(_ sender: TagButton) {
+        
+        guard let tag = tagModel else {
+            appearAlert()
+            return
+        }
+        
+        let cost = CostModel(tag: tag, memo: "test", price: 100)
+        delegate?.checkAction(cost: cost)
         dismiss(animated: true)
       }
+    
+    private func appearAlert() {
+        let alertController = UIAlertController()
+        let okAction = UIAlertAction(title: "태그를 골라주세요.", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true)
+    }
   
 }
 
@@ -138,6 +161,7 @@ extension DayCostViewController: UICollectionViewDataSource {
     let key = TagData.tagHeads[indexPath.row]
     guard let tagModel = TagData.tags[key] else { return cell}
     cell.configure(tag: tagModel)
+    cell.delegate = self
     
     return cell
   }
@@ -182,5 +206,15 @@ extension DayCostViewController: UICollectionViewDelegateFlowLayout {
 
 extension DayCostViewController: UITextFieldDelegate {
   
+}
+
+extension DayCostViewController: TagCollectionViewCellDelegate {
+    func didTapTagButtonAction(tagModel: TagModel?) {
+        
+        self.tagModel = tagModel
+        
+    }
+    
+    
 }
 
