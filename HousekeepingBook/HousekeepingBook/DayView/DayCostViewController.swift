@@ -17,7 +17,7 @@ class DayCostViewController: UIViewController {
   
     
     weak var delegate: DayCostViewControllerDelegat?
-    var tagModel: TagModel?
+    var tagKey: String?
     
   // MARK: - CollectionViewMetric
     
@@ -128,7 +128,7 @@ class DayCostViewController: UIViewController {
 
       @objc private func didTapButton(_ sender: TagButton) {
         
-        guard let tag = tagModel else {
+        guard let tag = tagKey else {
             appearAlert()
             return
         }
@@ -159,8 +159,8 @@ extension DayCostViewController: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.identifier, for: indexPath) as? TagCollectionViewCell else { fatalError() }
     let key = TagData.tagHeads[indexPath.row]
-    guard let tagModel = TagData.tags[key] else { return cell}
-    cell.configure(tag: tagModel)
+    
+    cell.configure(tagKey: key)
     cell.delegate = self
     
     return cell
@@ -196,7 +196,7 @@ extension DayCostViewController: UICollectionViewDelegateFlowLayout {
   
   // 버튼 클릭시 해당셀에 뭐가눌린지 알 수 있음
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    let key = TagData.tagHeads[indexPath.row]
+    let key = TagData.tagHeads[indexPath.row].rawValue
     guard let tagModel = TagData.tags[key] else { return }
     let tagData = tagModel
     print(tagData.name)
@@ -209,9 +209,9 @@ extension DayCostViewController: UITextFieldDelegate {
 }
 
 extension DayCostViewController: TagCollectionViewCellDelegate {
-    func didTapTagButtonAction(tagModel: TagModel?) {
+    func didTapTagButtonAction(tagKey: String?) {
         
-        self.tagModel = tagModel
+        self.tagKey = tagKey
         
     }
     
