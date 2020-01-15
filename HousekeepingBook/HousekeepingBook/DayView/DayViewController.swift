@@ -4,20 +4,44 @@ class DayViewController: UIViewController {
     private let budgetLabel = UILabel()
     private let plusButton = UIButton()
     private lazy var tableView = UITableView(frame: .zero)
-    var budget = "0" {
-        willSet {
-            self.budget = "\(newValue)"
+    private var budget = 0 {
+        didSet {
+            guard let text = DataPicker.shared.moneyForamt(price: budget) else { return }
+            budgetLabel.text = "\(text) 원"
         }
     }
-    var sampleData: [String] = []
+    
+    
+    var costData: [CostModel] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         baseUI()
         layout()
+        costData = DataPicker.shared.getData(date: Date())
+        
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
+        let days = DataPicker.shared.howManyDaysInMonth(date: Date())
+
+        guard monthBudget != 0 else { return }
+        guard let count = days else { return }
+
+        budget = monthBudget / count
+        
+        print(monthBudget, count)
+        
+        
+    }
+    
     @objc func plusButtonAction(button: UIButton) {
         
         let dayCostViewController = DayCostViewController()
+        dayCostViewController.delegate = self
         present(dayCostViewController, animated: true)
         
     }
@@ -25,7 +49,7 @@ class DayViewController: UIViewController {
         budgetLabel.backgroundColor = ColorZip.midiumBlue
         plusButton.backgroundColor = ColorZip.lightGray
         tableView.backgroundColor = ColorZip.lightYellow
-        budgetLabel.text = budget
+        budgetLabel.text = "\(budget)"
         budgetLabel.textAlignment = .center
         budgetLabel.font = UIFont.systemFont(ofSize: 40, weight: .heavy)
 //        budgetLabel.layer.masksToBounds = true
@@ -71,11 +95,24 @@ class DayViewController: UIViewController {
 }
 extension DayViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sampleData.count
+        return costData.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = sampleData[indexPath.row]
+        cell.textLabel?.text = costData[indexPath.row].tag.name
         return cell
     }
+}
+
+extension DayViewController: DayCostViewControllerDelegat {
+    func checkAction(cost: CostModel) {
+        costData.append(cost)
+        tableView.reloadData()
+        DataPicker.shared.setData(date: Date(), datas: costData)
+    }
+    
+    
+
+    
+    
 }

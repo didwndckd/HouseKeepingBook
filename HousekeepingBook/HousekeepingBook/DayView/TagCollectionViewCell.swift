@@ -7,11 +7,17 @@
 //
 import UIKit
 
+protocol TagCollectionViewCellDelegate: class {
+    func didTapTagButtonAction(tagModel: TagModel?)
+}
+
 class TagCollectionViewCell: UICollectionViewCell {
   
   static let identifier = "TagCollectionViewCell"
   
     let tagButton = TagButton(type: .system)
+    weak var delegate: TagCollectionViewCellDelegate?
+    private var tagModel: TagModel?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -32,11 +38,15 @@ class TagCollectionViewCell: UICollectionViewCell {
   }
   
   func configure(tag: TagModel) {
-    
     contentView.backgroundColor = tag.color
     tagButton.setTitle(tag.name, for: .normal)
+    tagModel = tag
+    tagButton.addTarget(self, action: #selector(didTapButton(sender:)), for: .touchUpInside)
   }
     
+    @objc private func didTapButton(sender: TagButton) {
+        delegate?.didTapTagButtonAction(tagModel: tagModel)
+    }
     
     
 }
