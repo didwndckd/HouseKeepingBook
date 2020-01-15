@@ -11,7 +11,6 @@ class DayViewController: UIViewController {
         }
     }
     
-    
     var costData: [CostModel] = []
     
     override func viewDidLoad() {
@@ -99,7 +98,10 @@ extension DayViewController: UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = costData[indexPath.row].tag.name
+        
+        let key = costData[indexPath.row].tag
+        let name = TagData.tags[key]?.name
+        cell.textLabel?.text = name
         return cell
     }
 }
@@ -108,7 +110,7 @@ extension DayViewController: DayCostViewControllerDelegat {
     func checkAction(cost: CostModel) {
         costData.append(cost)
         tableView.reloadData()
-        DataPicker.shared.setData(date: Date(), datas: costData)
+//        DataPicker.shared.setData(date: Date(), datas: costData)
     }
     
     

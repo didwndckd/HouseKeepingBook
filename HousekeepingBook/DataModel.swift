@@ -70,7 +70,10 @@ class DataPicker {
     func setData(date: Date, datas: [CostModel]) {
         let key = "date" + setFormatter(date: date, format: dateFormat)
         
-       
+        
+        for data in datas {
+            
+        }
         
     }
     

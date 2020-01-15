@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TagCollectionViewCellDelegate: class {
-    func didTapTagButtonAction(tagModel: TagModel?)
+    func didTapTagButtonAction(tagKey: String?)
 }
 
 class TagCollectionViewCell: UICollectionViewCell {
@@ -17,7 +17,7 @@ class TagCollectionViewCell: UICollectionViewCell {
   
     let tagButton = TagButton(type: .system)
     weak var delegate: TagCollectionViewCellDelegate?
-    private var tagModel: TagModel?
+    private var tagKey: String?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -37,15 +37,17 @@ class TagCollectionViewCell: UICollectionViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func configure(tag: TagModel) {
+  func configure(tagKey: TagKey) {
+    let key = tagKey.rawValue
+    guard let tag = TagData.tags[key] else {return}
     contentView.backgroundColor = tag.color
     tagButton.setTitle(tag.name, for: .normal)
-    tagModel = tag
+    self.tagKey = key
     tagButton.addTarget(self, action: #selector(didTapButton(sender:)), for: .touchUpInside)
   }
     
     @objc private func didTapButton(sender: TagButton) {
-        delegate?.didTapTagButtonAction(tagModel: tagModel)
+        delegate?.didTapTagButtonAction(tagKey: tagKey)
     }
     
     

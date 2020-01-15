@@ -10,7 +10,7 @@ import Foundation
 
 struct CostModel {
     
-    let tag: TagModel
+    let tag: String
     let memo: String
     let price: Int
     
