@@ -25,15 +25,15 @@ struct TagData {
     // 식비, 교통비, 휴대폰비, 공과금, 선물, 미용, 이자, 저금, 기타,
     
      static let tags: [String: TagModel] = [
-        TagKey.foodTag.rawValue: TagModel(name: "식사", color:  #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)),//1
-        TagKey.transTag.rawValue: TagModel(name: "교통", color:  #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)),//3
-        TagKey.phoneTag.rawValue: TagModel(name: "통신", color:  #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)),//6
-        TagKey.billTag.rawValue: TagModel(name: "공과금", color:  #colorLiteral(red: 0.1215686277, green: 0.01176470611, blue: 0.4235294163, alpha: 1)),//5
-        TagKey.giftTag.rawValue: TagModel(name: "선물", color:  #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)),//4
-        TagKey.beautyTag.rawValue: TagModel(name: "미용", color:  #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 1)),//2
-        TagKey.interestTag.rawValue: TagModel(name: "이자", color:  #colorLiteral(red: 0.3694096804, green: 1, blue: 0.9938061833, alpha: 1)),//7
-        TagKey.saveMoneyTag.rawValue: TagModel(name: "저금", color:  #colorLiteral(red: 1, green: 0.3806025088, blue: 0.9558392167, alpha: 1)),//6
-        TagKey.etcTage.rawValue: TagModel(name: "기타", color:  #colorLiteral(red: 0.676435411, green: 0.5766603351, blue: 1, alpha: 1)),//8
+        TagKey.foodTag.rawValue: TagModel(name: "식사", color:  #colorLiteral(red: 0.6341673732, green: 0.8130221963, blue: 0.9294165969, alpha: 1)),//1
+        TagKey.transTag.rawValue: TagModel(name: "교통", color:  #colorLiteral(red: 0.9764111638, green: 0.9074609876, blue: 0.8522706628, alpha: 1)),//3
+        TagKey.phoneTag.rawValue: TagModel(name: "통신", color:  #colorLiteral(red: 0.8951025605, green: 0.7146639824, blue: 0.8171000481, alpha: 1)),//6
+        TagKey.billTag.rawValue: TagModel(name: "공과금", color:  #colorLiteral(red: 0.1268284619, green: 0.6526806951, blue: 0.7871559262, alpha: 1)),//5
+        TagKey.giftTag.rawValue: TagModel(name: "선물", color:  #colorLiteral(red: 0.02159192972, green: 0.4183322191, blue: 0.6206336617, alpha: 1)),//4
+        TagKey.beautyTag.rawValue: TagModel(name: "미용", color:  #colorLiteral(red: 0.4928416014, green: 0.884049952, blue: 0.8057829738, alpha: 1)),//2
+        TagKey.interestTag.rawValue: TagModel(name: "이자", color:  #colorLiteral(red: 0.7262660861, green: 0.5991876721, blue: 0.7680996656, alpha: 1)),//7
+        TagKey.saveMoneyTag.rawValue: TagModel(name: "저금", color:  #colorLiteral(red: 0.6071969867, green: 0.5970490575, blue: 0.932897985, alpha: 1)),//6
+        TagKey.etcTage.rawValue: TagModel(name: "기타", color:  #colorLiteral(red: 0.6328347325, green: 0.6880624294, blue: 0.7724642158, alpha: 1)),//8
     ]
     
     
