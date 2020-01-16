@@ -28,20 +28,24 @@ class TagButtonView: UIView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    createTagButton()
+  }
+  
+  convenience init(buttonSize: CGFloat, fontSize: CGFloat, cornerRadius: CGFloat) {
+    self.init()
+    self.createTagButton(buttonSize: buttonSize, fontSize: fontSize, cornerRadius: cornerRadius)
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func createTagButton() {
+  func createTagButton(buttonSize: CGFloat, fontSize: CGFloat, cornerRadius: CGFloat) {
     for (index, value) in TagData.tagHeads.enumerated() {
       let tempButton = UIButton()
       tagButtons.append(tempButton)
       tempButton.tag = index
-      tempButton.layer.cornerRadius = 8
-      tempButton.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+      tempButton.layer.cornerRadius = 16 + cornerRadius
+      tempButton.titleLabel?.font = UIFont.systemFont(ofSize: 25 + fontSize, weight: .bold)
       tempButton.setTitle(TagData.tags[value.rawValue]?.name, for: .normal)
       tempButton.setTitleColor(.white, for: .normal)
       tempButton.backgroundColor = TagData.tags[value.rawValue]?.color
@@ -49,8 +53,8 @@ class TagButtonView: UIView {
       self.addSubview(tempButton)
       
       tempButton.translatesAutoresizingMaskIntoConstraints = false
-      tempButton.widthAnchor.constraint(equalToConstant: Padding.buttonSize).isActive = true
-      tempButton.heightAnchor.constraint(equalToConstant: Padding.buttonSize).isActive = true
+      tempButton.widthAnchor.constraint(equalToConstant: Padding.buttonSize + buttonSize).isActive = true
+      tempButton.heightAnchor.constraint(equalToConstant: Padding.buttonSize + buttonSize).isActive = true
     }
     
     for (index, button) in tagButtons.enumerated() {
@@ -81,6 +85,7 @@ class TagButtonView: UIView {
     tagButtons[sender.tag].shadow()
     tagButtons[selectButtonTag].unShadow()
     selectButtonTag = sender.tag
+    
     
     guard let tagKey = sender.titleLabel?.text else { return }
     delegate?.tagButtonsDidTap(tagKey: tagKey)

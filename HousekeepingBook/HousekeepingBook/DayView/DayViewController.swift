@@ -58,13 +58,20 @@ class DayViewController: UIViewController {
         
     }
     
-    @objc func plusButtonAction(button: UIButton) {
-        
-        let dayCostViewController = DayCostViewController()
-        dayCostViewController.delegate = self
-        present(dayCostViewController, animated: true)
-        
-    }
+  @objc func plusButtonAction(button: UIButton) {
+//            let dayCostViewController = DayCostViewController()
+//            dayCostViewController.delegate = self
+//            present(dayCostViewController, animated: true)
+    
+    let vc = CostDetailViewController()
+    vc.modalPresentationStyle = .overFullScreen
+    present(vc, animated: true)
+    
+//    let vc = MonthCostViewController()
+//    present(vc, animated: true)
+    
+  }
+  
     private func baseUI() {
         // MARK: - BackgroundColor
         budgetLabel.backgroundColor = MyColors.yellow

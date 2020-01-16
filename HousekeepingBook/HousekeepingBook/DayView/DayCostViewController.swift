@@ -61,25 +61,10 @@ class DayCostViewController: UIViewController {
   }()
   
   private lazy var vTagButton: TagButtonView = {
-    let temp = TagButtonView()
+    let temp = TagButtonView(buttonSize: 0, fontSize: 0, cornerRadius: 0)
     temp.delegate = self
     return temp
   }()
-  
-//  lazy private var collectionView: UICollectionView = {
-//    // layout
-//    let layout = UICollectionViewFlowLayout()
-//    // 가로, 세로로 보여짐
-//    layout.scrollDirection = .horizontal
-//    // view
-//    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//    collectionView.backgroundColor = .white
-//    collectionView.dataSource = self
-//    collectionView.delegate = self
-//    collectionView.register(TagCollectionViewCell.self, forCellWithReuseIdentifier: TagCollectionViewCell.identifier)
-//
-//    return collectionView
-//  }()
   
   private var checkButton: UIButton = {
     let checkButton = UIButton()
