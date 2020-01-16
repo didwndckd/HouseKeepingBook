@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TagCollectionViewCellDelegate: class {
-    func didTapTagButtonAction(tagKey: String?)
+  func didTapTagButtonAction(tagKey: String?)
 }
 
 class TagCollectionViewCell: UICollectionViewCell {
@@ -47,7 +47,8 @@ class TagCollectionViewCell: UICollectionViewCell {
   }
     
     @objc private func didTapButton(sender: TagButton) {
-        delegate?.didTapTagButtonAction(tagKey: tagKey)
+      delegate?.didTapTagButtonAction(tagKey: tagKey)
+      self.contentView.shadow()
     }
     
     
