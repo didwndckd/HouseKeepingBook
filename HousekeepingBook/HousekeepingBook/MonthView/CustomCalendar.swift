@@ -9,13 +9,17 @@
 import UIKit
 import JTAppleCalendar
 
+protocol CustomCalendarDelegate: class {
+    func presentMonthCostView(date: Date)
+}
+
 class CustomCalendar: UIView {
     
     var month = 0
     var year = 0
     let calendar = JTACMonthView()
     let calendarData = Calendar(identifier: .gregorian)
-    
+    weak var delegate: CustomCalendarDelegate?
 
     init(calenderMonth: Int, calendarYear: Int) {
         super.init(frame: .zero)
@@ -168,11 +172,13 @@ extension CustomCalendar: JTACMonthViewDelegate {
         
        }
     private func handleCellSelected(cell: DateCell, cellState: CellState) {
+        
         if cellState.isSelected {
-            
+            cell.selectedView.isHidden = false
         }else {
-            
+            cell.selectedView.isHidden = true
         }
+        
     }
     
     private func setCurrentTimeZone(state: Date) -> String {
