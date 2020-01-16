@@ -11,6 +11,10 @@ import UIKit
 class CostDetailViewController: UIViewController {
   
   // MARK: - Property
+  var date: Date?
+  var tag: TagKey = .foodTag
+  var memo = "Memo Test!!"
+  var price = -1
   private let baseView = UIView()
   private let mainLabel = UILabel()
   private let dateLabel = UILabel()
@@ -18,19 +22,20 @@ class CostDetailViewController: UIViewController {
   private let sumLabel = UILabel()
   private let totalTextField = UITextField()
   private let totalLine = UIView()
-  private let tagButton: UIButton = {
-    let tagButton = UIButton()
-
-    return tagButton
-  }()
+  private let memoLabel = UILabel()
+  private var memoView = UIView()
+  private let tagButton = UIButton()
+  private var toggle = false
   
+
+  // MARK: - vTagButton
   private lazy var vTagButton: TagButtonView = {
     let button = TagButtonView(buttonSize: -20, fontSize: -7, cornerRadius: 10)
 //    temp.delegate = self
     return button
   }()
   
-  private let trashButton:UIButton = {
+  private let trashButton: UIButton = {
     let button = UIButton()
     let closeImage = UIImage(systemName: "trash")
     button.setImage(closeImage, for: .normal)
@@ -166,27 +171,44 @@ class CostDetailViewController: UIViewController {
       trashButton.leadingAnchor.constraint(equalTo: baseView.leadingAnchor, constant: 5)
     ])
     
-    baseView.addSubview(vTagButton)
-    vTagButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      vTagButton.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: Padding.ySpace - 15),
-      vTagButton.leadingAnchor.constraint(equalTo: baseView.leadingAnchor),
-      //      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      //      vTagButton.heightAnchor.constraint(equalToConstant: 300),
-      vTagButton.trailingAnchor.constraint(equalTo: baseView.trailingAnchor),
-    ])
-    
     baseView.addSubview(tagButton)
     tagButton.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      tagButton.topAnchor.constraint(equalTo: vTagButton.topAnchor),
-      tagButton.centerXAnchor.constraint(equalTo: vTagButton.centerXAnchor),
+      tagButton.topAnchor.constraint(equalTo: baseView.topAnchor, constant: 150),
+      tagButton.centerXAnchor.constraint(equalTo: baseView.centerXAnchor),
       tagButton.widthAnchor.constraint(equalToConstant: Padding.buttonSize - 20),
       tagButton.heightAnchor.constraint(equalToConstant: Padding.buttonSize - 20),
       
     ])
     
+    baseView.addSubview(memoView)
+    memoView.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      memoView.bottomAnchor.constraint(equalTo: totalTextField.topAnchor, constant: -10),
+      memoView.centerXAnchor.constraint(equalTo: baseView.centerXAnchor),
+      memoView.widthAnchor.constraint(equalToConstant: 220),
+      memoView.heightAnchor.constraint(equalToConstant: 24)
+    ])
     
+    memoView.addSubview(memoLabel)
+    memoLabel.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      memoLabel.topAnchor.constraint(equalTo: memoView.topAnchor),
+      memoLabel.centerXAnchor.constraint(equalTo: baseView.centerXAnchor),
+      memoLabel.widthAnchor.constraint(equalToConstant: 200),
+      memoLabel.heightAnchor.constraint(equalToConstant: 24)
+    ])
+    
+    // MARK: - vTagButton
+    baseView.addSubview(vTagButton)
+    vTagButton.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      vTagButton.topAnchor.constraint(equalTo: memoView.topAnchor),
+      vTagButton.leadingAnchor.constraint(equalTo: baseView.leadingAnchor),
+      //      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+      //      vTagButton.heightAnchor.constraint(equalToConstant: 300),
+      vTagButton.trailingAnchor.constraint(equalTo: baseView.trailingAnchor),
+    ])
   }
   
   // MARK: - baseUI
@@ -220,17 +242,50 @@ class CostDetailViewController: UIViewController {
     
     vTagButton.alpha = 0
     
-    tagButton.setTitle(" Tag ", for: .normal)
+    tagButton.setTitle(TagData.tags[TagKey.beautyTag.rawValue]?.name, for: .normal)
     tagButton.setTitleColor(.white, for: .normal)
-    tagButton.backgroundColor = #colorLiteral(red: 0.9921568627, green: 0.8156862745, blue: 0.3490196078, alpha: 1)
-    //    tagButton.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
-    tagButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+    tagButton.backgroundColor = TagData.tags[TagKey.beautyTag.rawValue]?.color
+    tagButton.addTarget(self, action: #selector(didTapTagButton(_:)), for: .touchUpInside)
+    tagButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
     tagButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
-    tagButton.layer.cornerRadius = 10
+    tagButton.layer.cornerRadius = 26
+    
+    memoLabel.font = UIFont(name: "Arial", size: 16)
+    memoLabel.textAlignment = .center
+    memoLabel.text = self.memo
+    
+    memoView.backgroundColor = #colorLiteral(red: 0.9215686275, green: 0.9215686275, blue: 0.9215686275, alpha: 1)
+    memoView.layer.cornerRadius = 20
+  
   }
    
+  
+  
   @objc private func didTapCloseButton(_ sender: UIButton) {
     dismiss(animated: true)
+  }
+  
+  @objc private func didTapTagButton(_ sender: UIButton) {
+
+    if toggle == false {
+    UIView.animate(
+      withDuration: 0.8,
+      animations: {
+        self.tagButton.alpha = 0
+        self.vTagButton.alpha = 1
+        self.vTagButton.center.y -= 240
+        self.toggle = true
+    })
+    } else {
+      UIView.animate(
+        withDuration: 0.8,
+        animations: {
+          self.vTagButton.alpha = 0
+          self.vTagButton.center.y += 240
+      })
+    }
+    
+    
   }
   
   struct Padding {
