@@ -9,18 +9,18 @@
 import UIKit
 
 protocol DayCostViewControllerDelegat: class {
-    func checkAction(cost: CostModel)
+  func checkAction(cost: CostModel)
 }
 
 // 일별 추가버튼 클릭시
 class DayCostViewController: UIViewController {
   
-    
-    weak var delegate: DayCostViewControllerDelegat?
-    var tagKey: String?
-    
+  
+  weak var delegate: DayCostViewControllerDelegat?
+  var tagKey: String?
+  
   // MARK: - CollectionViewMetric
-    
+  
   private enum Metric {
     static let lineSpacing: CGFloat = 30
     static let itemSpacing: CGFloat = 3
@@ -46,39 +46,80 @@ class DayCostViewController: UIViewController {
   lazy var textField: UITextField = {
     let textField = UITextField()
     textField.delegate = self
-    textField.borderStyle = .roundedRect
+    textField.borderStyle = .none
     textField.keyboardType = .numberPad
-    textField.font = UIFont(name: "Arial", size: 28)
+    textField.font = UIFont(name: "Arial", size: 33)
     textField.textAlignment = .center
+    
     return textField
   }()
   
-  lazy private var collectionView: UICollectionView = {
-    // layout
-    let layout = UICollectionViewFlowLayout()
-    // 가로, 세로로 보여짐
-    layout.scrollDirection = .horizontal
-    
-    // view
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    collectionView.backgroundColor = .white
-    collectionView.dataSource = self
-    collectionView.delegate = self
-    collectionView.register(TagCollectionViewCell.self, forCellWithReuseIdentifier: TagCollectionViewCell.identifier)
-    
-    return collectionView
+  private var moneyLine: UIView = {
+    let moneyLine = UIView()
+    moneyLine.backgroundColor = ColorZip.midiumPink
+    return moneyLine
   }()
   
-  lazy private var checkButton: UIButton = {
+  private lazy var vTagButton: TagButtonView = {
+    let temp = TagButtonView()
+    temp.delegate = self
+    return temp
+  }()
+  
+//  lazy private var collectionView: UICollectionView = {
+//    // layout
+//    let layout = UICollectionViewFlowLayout()
+//    // 가로, 세로로 보여짐
+//    layout.scrollDirection = .horizontal
+//    // view
+//    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+//    collectionView.backgroundColor = .white
+//    collectionView.dataSource = self
+//    collectionView.delegate = self
+//    collectionView.register(TagCollectionViewCell.self, forCellWithReuseIdentifier: TagCollectionViewCell.identifier)
+//
+//    return collectionView
+//  }()
+  
+  private var checkButton: UIButton = {
     let checkButton = UIButton()
     checkButton.setTitle(" Check ", for: .normal)
     checkButton.setTitleColor(.white, for: .normal)
-    checkButton.backgroundColor = #colorLiteral(red: 0.5056351423, green: 0.6657808423, blue: 1, alpha: 1)
+    checkButton.backgroundColor = #colorLiteral(red: 0.9921568627, green: 0.8156862745, blue: 0.3490196078, alpha: 1)
     checkButton.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
     checkButton.titleLabel?.font = UIFont(name: "Arial", size: 25)
     checkButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
     checkButton.layer.cornerRadius = 10
     return checkButton
+  }()
+  
+  lazy private var memoTextField: UITextField = {
+    let memoTextField = UITextField()
+    memoTextField.delegate = self
+    memoTextField.borderStyle = .none
+    //    memoTextField.keyboardType = .
+    memoTextField.font = UIFont(name: "Arial", size: 20)
+    memoTextField.textAlignment = .left
+    memoTextField.placeholder = "MEMO:"
+    return memoTextField
+  }()
+  
+  private var memoView: UIView = {
+    let memoView = UIView()
+    memoView.backgroundColor = #colorLiteral(red: 0.9215686275, green: 0.9215686275, blue: 0.9215686275, alpha: 1)
+    memoView.layer.cornerRadius = 20
+    return memoView
+  }()
+  
+  // ₩
+  let sumLabel: UILabel = {
+    let sumLabel = UILabel()
+    sumLabel.backgroundColor = .white
+    sumLabel.textColor = ColorZip.lightGray
+    sumLabel.text = "₩"
+    sumLabel.textAlignment = .left
+    sumLabel.font = UIFont.systemFont(ofSize: 35)
+    return sumLabel
   }()
   
   
@@ -95,126 +136,144 @@ class DayCostViewController: UIViewController {
   
   private func configureCollectionView() {
     
-    view.addSubview(collectionView)
-    collectionView.translatesAutoresizingMaskIntoConstraints = false
+//    view.addSubview(collectionView)
+//    collectionView.translatesAutoresizingMaskIntoConstraints = false
+//    NSLayoutConstraint.activate([
+//      collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
+//      collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+//      //      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+//      collectionView.heightAnchor.constraint(equalToConstant: 300),
+//      collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+//    ])
+    view.addSubview(vTagButton)
+    vTagButton.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
-      collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-//      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      collectionView.heightAnchor.constraint(equalToConstant: 300),
-      collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+      vTagButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
+      vTagButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+      //      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+//      vTagButton.heightAnchor.constraint(equalToConstant: 300),
+      vTagButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
     ])
+    
     
     view.addSubview(textField)
     textField.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+      textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Standard.space - 10),
       textField.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-      textField.widthAnchor.constraint(equalToConstant: 300),
+      textField.widthAnchor.constraint(equalToConstant: 230),
       textField.heightAnchor.constraint(equalToConstant: 50)
+    ])
+    
+    view.addSubview(moneyLine)
+    moneyLine.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      moneyLine.bottomAnchor.constraint(equalTo: textField.bottomAnchor),
+      moneyLine.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+      moneyLine.widthAnchor.constraint(equalToConstant: 230),
+      moneyLine.heightAnchor.constraint(equalToConstant: 1)
     ])
     
     view.addSubview(checkButton)
     checkButton.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      checkButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 30),
+      checkButton.topAnchor.constraint(equalTo: vTagButton.bottomAnchor, constant: 30),
       checkButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
       //checkButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
       //checkButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -100),
     ])
     
+    view.addSubview(sumLabel)
+    sumLabel.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      sumLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Standard.space - 10),
+      sumLabel.leadingAnchor.constraint(equalTo: textField.leadingAnchor, constant: 5),
+    ])
+    
+    view.addSubview(memoView)
+    memoView.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      memoView.topAnchor.constraint(equalTo: moneyLine.bottomAnchor, constant: Standard.space - 13),
+      memoView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+      memoView.widthAnchor.constraint(equalToConstant: 320),
+      memoView.heightAnchor.constraint(equalToConstant: 40)
+    ])
+    
+    memoView.addSubview(memoTextField)
+    memoTextField.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      memoTextField.topAnchor.constraint(equalTo: memoView.topAnchor),
+      memoTextField.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+      memoTextField.widthAnchor.constraint(equalToConstant: 300),
+      memoTextField.heightAnchor.constraint(equalToConstant: 40)
+    ])
+    
     
   }
-
-      @objc private func didTapButton(_ sender: TagButton) {
-        
-        guard let tag = tagKey else {
-            appearAlert()
-            return
-        }
-        
-        let cost = CostModel(tag: tag, memo: "test", price: 1000)
-        delegate?.checkAction(cost: cost)
-        dismiss(animated: true)
-      }
+  
+  @objc private func didTapButton(_ sender: TagButton) {
     
-    private func appearAlert() {
-        let alertController = UIAlertController()
-        let okAction = UIAlertAction(title: "태그를 골라주세요.", style: .default, handler: nil)
-        alertController.addAction(okAction)
-        present(alertController, animated: true)
+    guard let tag = tagKey else {
+      appearAlert()
+      return
     }
+    
+    let cost = CostModel(tag: tag, memo: "test", price: 1000)
+    delegate?.checkAction(cost: cost)
+    dismiss(animated: true)
+  }
+  
+  private func appearAlert() {
+    let alertController = UIAlertController()
+    let okAction = UIAlertAction(title: "태그를 골라주세요.", style: .default, handler: nil)
+    alertController.addAction(okAction)
+    present(alertController, animated: true)
+  }
+  
+  private struct Standard {
+    static let space: CGFloat = 30
+  }
   
 }
 
 
 // MARK: - UICollectionViewDataSource
 
-extension DayCostViewController: UICollectionViewDataSource {
-  
-  func numberOfSections(in collectionView: UICollectionView) -> Int { return 1 }
-  
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { return TagData.tags.count }
-  
-  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.identifier, for: indexPath) as? TagCollectionViewCell else { fatalError() }
-    let key = TagData.tagHeads[indexPath.row]
-    
-    cell.configure(tagKey: key)
-    cell.delegate = self
-    
-    return cell
-  }
-}
-
-extension DayCostViewController: UICollectionViewDelegateFlowLayout {
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    let lineSpacing = Metric.lineSpacing * (Metric.numberOfLine - 1)
-    let horizontalPadding = Metric.inset.left + Metric.inset.right + Metric.nextOffSet
-    
-    let itemSpacing = Metric.itemSpacing * (Metric.numberOfItem - 1)
-    let verticalPadding = Metric.inset.top + Metric.inset.bottom
-    
-    let width = (collectionView.frame.width - lineSpacing - horizontalPadding) / Metric.numberOfLine
-    let height = (collectionView.frame.height - itemSpacing - verticalPadding) / Metric.numberOfItem
-    
-    return CGSize(width: width.rounded(.down), height: height.rounded(.down))
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-    return Metric.lineSpacing
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-    return Metric.itemSpacing
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-    return Metric.inset
-  }
-  
-  // 버튼 클릭시 해당셀에 뭐가눌린지 알 수 있음
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    let key = TagData.tagHeads[indexPath.row].rawValue
-    guard let tagModel = TagData.tags[key] else { return }
-    let tagData = tagModel
-    print(tagData.name)
-  }
-  
-}
-
 extension DayCostViewController: UITextFieldDelegate {
   
+  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    
+    if string.isEmpty {
+      return true
+    }
+    if textField == memoTextField {
+      return true
+    } else if textField == self.textField {
+      if let _ = Int(string) {
+        return true
+      } else {
+        return false
+      }
+    }
+    return true
+  }
 }
 
 extension DayCostViewController: TagCollectionViewCellDelegate {
-    func didTapTagButtonAction(tagKey: String?) {
-        
-        self.tagKey = tagKey
-        
-    }
+  func didTapTagButtonAction(tagKey: String?) {
+    self.tagKey = tagKey
     
-    
+    guard let tagModel = TagData.tags[tagKey!] else { return }
+    let tagData = tagModel
+    print("didTapTagButtonAction", tagData.name)
+  }
+  
+  
+  
 }
 
+extension DayCostViewController: TagButtonViewDelegate {
+  func tagButtonsDidTap(tagKey: String) {
+    self.tagKey = tagKey
+  }
+}
