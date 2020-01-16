@@ -12,13 +12,15 @@ import UIKit
 
 class MonthViewController: UIViewController {
     
+    private let scrollView = UIScrollView()
     private let budgetView = UIView()
     private let budgetButton = UIButton(type: .system)
     
-    private let calender = JTACMonthView()
     private var date = Date()
     private let calendarData = Calendar(identifier: .gregorian)
+    private var months: [(year: Int, month: Int)] = DataPicker.shared.monthInit(date: Date())
     
+
     private var year = 0
     private var _month: Int = 0
     private var month: Int {
@@ -59,11 +61,6 @@ class MonthViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = MyColors.lightgray
-        calender.backgroundColor = .systemBackground
-        calender.calendarDataSource = self
-        calender.calendarDelegate = self
-        calender.register(DateCell.self, forCellWithReuseIdentifier: "DateCell")
-        calender.register(DateHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: DateHeader.identifier)
         
         budgetButton.addTarget(self, action: #selector(didTapBudgetButton), for: .touchUpInside)
         
@@ -74,6 +71,10 @@ class MonthViewController: UIViewController {
         setThisMonth()
         
         getDateBudget()
+        
+        setupCalenders()
+        
+        scrollView.delegate = self
     }
     
     
@@ -116,15 +117,20 @@ class MonthViewController: UIViewController {
 
     private func setupUI() {
         
-        view.addSubview(calender)
+        view.addSubview(scrollView)
         view.addSubview(budgetView)
         budgetView.addSubview(budgetButton)
         
         let guide = view.safeAreaLayoutGuide
         
-        calender.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         budgetView.translatesAutoresizingMaskIntoConstraints = false
         budgetButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        scrollView.isPagingEnabled = true
+        
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
         
         budgetView.backgroundColor = MyColors.yellow
     
@@ -142,125 +148,54 @@ class MonthViewController: UIViewController {
         budgetButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10).isActive = true
         budgetButton.bottomAnchor.constraint(equalTo: budgetView.bottomAnchor, constant: -10).isActive = true
         
-        calender.topAnchor.constraint(equalTo: budgetView.bottomAnchor).isActive = true
-        calender.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
-        calender.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
-        calender.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: budgetView.bottomAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
     }
     
-}
-
-extension MonthViewController: JTACMonthViewDataSource{
-    
-    
-    func configureCalendar(_ calendar: JTACMonthView) -> ConfigurationParameters {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy MM dd"
-        let startDate = formatter.date(from: "2020 01 01")!
-        let endDate = Date()
-        return ConfigurationParameters(startDate: startDate,
-                                       endDate: endDate)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollView.contentOffset.x = scrollView.bounds.width
     }
     
     
-}
-
-extension MonthViewController: JTACMonthViewDelegate {
-    
-    func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "y.MMM"
+    private func setupCalenders() {
         
-        let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: DateHeader.identifier, for: indexPath) as! DateHeader
-        header.dateHeader.text = formatter.string(from: range.start)
-        header.dateHeader.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
+        var calenders: [CustomCalendar] = []
         
-        return header
-    }
-    
-    func calendarSizeForMonths(_ calendar: JTACMonthView?) -> MonthSize? {
-        return MonthSize(defaultSize: 50)
-    }
-    
-    
-    func calendar(_ calendar: JTACMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTACDayCell {
-        
-        let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "DateCell", for: indexPath) as! DateCell
-        self.calendar(calendar, willDisplay: cell, forItemAt: date, cellState: cellState, indexPath: indexPath)
-        return cell
-    }
-    
-   
-    
-    func calendar(_ calendar: JTACMonthView, willDisplay cell: JTACDayCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
-        let cell = cell as! DateCell
-        configurationCell(view: cell, cellState: cellState)
-    }
-    
-    func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
-        guard let cell = cell else { return }
-        configurationCell(view: cell, cellState: cellState)
-    }
-    func calendar(_ calendar: JTACMonthView, didDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
-        guard let cell = cell else { return }
-        configurationCell(view: cell, cellState: cellState)
-    }
-    
-    
-    private func configurationCell(view: JTACDayCell, cellState: CellState) {
-           guard let cell = view as? DateCell else { return }
-           cell.dateLabel.text = cellState.text
-        
-           handleCell(cell: cell, cellState: cellState)
-           handleCellSelected(cell: cell, cellState: cellState)
-       }
-
-       private func handleCell(cell: DateCell, cellState: CellState) {
-        
-           if cellState.dateBelongsTo == .thisMonth {
-            cell.isHidden = false
-           }else {
-               cell.isHidden = true
-           }
+        for i in 0...2 {
             
-        if cellState.day == .sunday {
-            cell.dateLabel.textColor = .red
-        }else if cellState.day == .saturday {
-            cell.dateLabel.textColor = .blue
-        }else {
-            cell.dateLabel.textColor = .black
-        }
-        
-        let currentTime = setCurrentTimeZone(state: Date())
-        let cellTime = setCurrentTimeZone(state: cellState.date)
-        //print("current: \(currentTime) | cellTime \(cellTime)")
-        if currentTime == cellTime {
-            cell.selectedView.isHidden = false
-        }else {
-            cell.selectedView.isHidden = true
-        }
-        
-        
-        
-       }
-    private func handleCellSelected(cell: DateCell, cellState: CellState) {
-        if cellState.isSelected {
+            let tempYear = months[i].year
+            let tempMonth = months[i].month
             
-        }else {
+            let customCalendar = CustomCalendar(calenderMonth: tempMonth, calendarYear: tempYear)
+            scrollView.addSubview(customCalendar)
+            customCalendar.translatesAutoresizingMaskIntoConstraints = false
             
+            let leading = i == 0 ? scrollView.leadingAnchor : calenders[i - 1].trailingAnchor
+            
+            customCalendar.leadingAnchor.constraint(equalTo: leading).isActive = true
+            customCalendar.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+            customCalendar.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+            customCalendar.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+            customCalendar.heightAnchor.constraint(equalTo: scrollView.heightAnchor).isActive = true
+            if i == 2 {
+                customCalendar.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+            }
+            calenders.append(customCalendar)
         }
     }
     
-    private func setCurrentTimeZone(state: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        dateFormatter.timeZone = TimeZone.current
-        let date = dateFormatter.string(from: state)
-        return date
-    }
     
 }
 
+extension MonthViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let index = scrollView.contentOffset.x / scrollView.bounds.width
+        print(index)
+    }
+}
 
 extension MonthViewController: BudgitViewControllerDelegate {
     func setBudget() {
