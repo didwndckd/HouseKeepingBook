@@ -4,8 +4,13 @@ class DayViewController: UIViewController {
     private let budgetLabel = UILabel()
     private let plusButton = UIButton()
     private lazy var tableView = UITableView(frame: .zero)
+    private var baseBudget: Int?
     private var budget = 0 {
         didSet {
+            guard let _ = baseBudget else {
+                budgetLabel.text = "예산을 설정하세요."
+                return
+            }
             guard let text = DataPicker.shared.moneyForamt(price: budget) else { return }
             budgetLabel.text = "\(text) 원"
         }
@@ -29,8 +34,10 @@ class DayViewController: UIViewController {
 
         guard monthBudget != 0 else { return }
         guard let count = days else { return }
-
-        budget = monthBudget / count
+        
+        let budget = monthBudget / count
+        baseBudget = budget
+        self.budget = budget
         
         print(monthBudget, count)
         
@@ -64,7 +71,9 @@ class DayViewController: UIViewController {
         plusButton.layer.shadowColor = ColorZip.midiumGray.cgColor
         plusButton.layer.shadowRadius = 4
         plusButton.layer.shadowOffset = CGSize(width: 4, height: 4)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        
+        tableView.register(DayViewCell.self, forCellReuseIdentifier: "cell")
+        
         tableView.dataSource = self
         tableView.rowHeight = 70
 //        tableView.layer.cornerRadius = 17
@@ -97,12 +106,20 @@ extension DayViewController: UITableViewDataSource {
         return costData.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell: DayViewCell
         
-        let key = costData[indexPath.row].tag
-        let name = TagData.tags[key]?.name
-        cell.textLabel?.text = name
-        return cell
+        
+        if let biningCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? DayViewCell {
+            cell = biningCell
+        }else {
+            cell = DayViewCell(style: .default, reuseIdentifier: "cell")
+            
+        }
+            let key = costData[indexPath.row].tag
+            let name = TagData.tags[key]?.name
+            cell.textLabel?.text = name
+            return cell
+  
     }
 }
 
@@ -110,7 +127,7 @@ extension DayViewController: DayCostViewControllerDelegat {
     func checkAction(cost: CostModel) {
         costData.append(cost)
         tableView.reloadData()
-//        DataPicker.shared.setData(date: Date(), datas: costData)
+        DataPicker.shared.setData(date: Date(), datas: costData)
     }
     
     

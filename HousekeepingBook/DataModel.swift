@@ -58,22 +58,38 @@ class DataPicker {
 
     
     func getData(date: Date) -> [CostModel] {
-        
         let key = "date" + setFormatter(date: date, format: dateFormat)
+        var tempArray: [CostModel] = []
         
-        guard let dateData = UserDefaults.standard.object(forKey: key) as? [CostModel] else {return []}
+        let decoder = JSONDecoder()
         
-        return dateData
+        let userDefaults = UserDefaults.standard
+        let loadData = userDefaults.object(forKey: key)
+        guard let successLoadData = loadData as? [String] else {return []}
+        for jsonString in successLoadData {
+            let optionalData = jsonString.data(using: .utf8)
+            if let data = optionalData, let costModel = try? decoder.decode(CostModel.self, from: data) {
+                tempArray.append(costModel)
+            }
+        }
         
+        return tempArray
     }
     
     func setData(date: Date, datas: [CostModel]) {
         let key = "date" + setFormatter(date: date, format: dateFormat)
-        
+        var tempArray: [String] = []
+        let encoder = JSONEncoder()
         
         for data in datas {
             
+            let jsonData = try? encoder.encode(data)
+            guard let data = jsonData, let jsonString = String(data: data, encoding: .utf8)
+                else { return }
+            tempArray.append(jsonString)
         }
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(tempArray, forKey: key)
         
     }
     
