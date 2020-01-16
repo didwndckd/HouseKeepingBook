@@ -133,7 +133,7 @@ class DayCostViewController: UIViewController {
             return
         }
         
-        let cost = CostModel(tag: tag, memo: "test", price: 100)
+        let cost = CostModel(tag: tag, memo: "test", price: 1000)
         delegate?.checkAction(cost: cost)
         dismiss(animated: true)
       }
