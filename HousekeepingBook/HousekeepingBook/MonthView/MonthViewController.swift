@@ -12,6 +12,7 @@ import UIKit
 
 class MonthViewController: UIViewController {
     
+    private let budgetView = UIView()
     private let budgetButton = UIButton(type: .system)
     
     private let calender = JTACMonthView()
@@ -57,7 +58,7 @@ class MonthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = MyColors.lightgray
         calender.backgroundColor = .systemBackground
         calender.calendarDataSource = self
         calender.calendarDelegate = self
@@ -68,15 +69,12 @@ class MonthViewController: UIViewController {
         
         budget = DataPicker.shared.getMonthBudget(month: date)
         
+        setupUI()
+        
         setThisMonth()
         
         getDateBudget()
-        
-        setupUI()
-    
-        
     }
-    
     
     
     @objc private func didTapBudgetButton() {
@@ -117,25 +115,34 @@ class MonthViewController: UIViewController {
     
 
     private func setupUI() {
-        let guide = view.safeAreaLayoutGuide
+        
         view.addSubview(calender)
-        view.addSubview(budgetButton)
+        view.addSubview(budgetView)
+        budgetView.addSubview(budgetButton)
         
-        budgetButton.translatesAutoresizingMaskIntoConstraints = false
+        let guide = view.safeAreaLayoutGuide
+        
         calender.translatesAutoresizingMaskIntoConstraints = false
+        budgetView.translatesAutoresizingMaskIntoConstraints = false
+        budgetButton.translatesAutoresizingMaskIntoConstraints = false
         
-        
+        budgetView.backgroundColor = MyColors.yellow
+    
         budgetButton.titleLabel?.font = .systemFont(ofSize: 40, weight: .heavy)
-        budgetButton.tintColor = .black
-        budgetButton.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+        budgetButton.tintColor = MyColors.yellow
+        budgetButton.backgroundColor = .white
         
+        budgetView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        budgetView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        budgetView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        budgetView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.4).isActive = true
         
-        budgetButton.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
-        budgetButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
-        budgetButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
-        budgetButton.heightAnchor.constraint(equalToConstant: view.bounds.height / 4).isActive = true
+        budgetButton.topAnchor.constraint(equalTo: guide.topAnchor, constant: 10).isActive = true
+        budgetButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 10).isActive = true
+        budgetButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10).isActive = true
+        budgetButton.bottomAnchor.constraint(equalTo: budgetView.bottomAnchor, constant: -10).isActive = true
         
-        calender.topAnchor.constraint(equalTo: budgetButton.bottomAnchor).isActive = true
+        calender.topAnchor.constraint(equalTo: budgetView.bottomAnchor).isActive = true
         calender.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         calender.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         calender.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
