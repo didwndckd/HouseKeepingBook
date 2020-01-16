@@ -124,6 +124,25 @@ class DataPicker {
         
     }
     
+    func monthInit(date: Date) -> [(year: Int, month: Int)]{
+        let monthString = setFormatter(date: date, format: "MM")
+        let yearString = setFormatter(date: date, format: "yyyy")
+        
+        guard let month = Int(monthString), let year = Int(yearString) else { return [] }
+        let lastMonth = (month - 1) <= 0 ? 12 : (month - 1)
+        let lastYear = (month - 1) == 0 ? (year - 1) : year
+        
+        let currentMonth = month
+        let currentYear = year
+        
+        let nextMonth = (month + 1) >= 13 ? 1 : (month + 1)
+        let nextYear = (month + 1) >= 13 ? (year + 1) : year
+        
+        return [ (lastYear, lastMonth),
+                 (currentYear, currentMonth),
+                 (nextYear, nextMonth)]
+    }
+    
     
     
 }
