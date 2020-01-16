@@ -47,6 +47,8 @@ class DayViewCell: UITableViewCell {
         contentView.addSubview(memoView)
         contentView.addSubview(priceView)
         
+        priceView.textColor = #colorLiteral(red: 0.9921568627, green: 0.8156862745, blue: 0.3490196078, alpha: 0.8)
+        
         tagView.translatesAutoresizingMaskIntoConstraints = false
         tagView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: margin).isActive = true
         tagView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: margin).isActive = true
