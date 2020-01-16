@@ -9,7 +9,7 @@
 import UIKit
 
 protocol TagButtonViewDelegate: class {
-  func tagButtonsDidTap(tagKey: String)
+  func tagButtonsDidTap(tagKey: TagKey)
 }
 
 class TagButtonView: UIView {
@@ -41,7 +41,7 @@ class TagButtonView: UIView {
   
   func createTagButton(buttonSize: CGFloat, fontSize: CGFloat, cornerRadius: CGFloat) {
     for (index, value) in TagData.tagHeads.enumerated() {
-      let tempButton = UIButton()
+      let tempButton = TagButton(tagKey: value)
       tagButtons.append(tempButton)
       tempButton.tag = index
       tempButton.layer.cornerRadius = 16 + cornerRadius
@@ -81,14 +81,12 @@ class TagButtonView: UIView {
       button.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Padding.inset).isActive = true
     }
   }
-  @objc private func tagButtonAction(_ sender: UIButton) {
+  @objc private func tagButtonAction(_ sender: TagButton) {
     tagButtons[sender.tag].shadow()
     tagButtons[selectButtonTag].unShadow()
     selectButtonTag = sender.tag
     
-    
-    guard let tagKey = sender.titleLabel?.text else { return }
-    delegate?.tagButtonsDidTap(tagKey: tagKey)
+    delegate?.tagButtonsDidTap(tagKey: sender.tagKey)
   }
   
 }

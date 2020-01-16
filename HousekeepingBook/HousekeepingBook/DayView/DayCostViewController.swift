@@ -17,7 +17,7 @@ class DayCostViewController: UIViewController {
   
   
   weak var delegate: DayCostViewControllerDelegat?
-  var tagKey: String?
+  var tagKey: TagKey?
   
   // MARK: - CollectionViewMetric
   
@@ -121,22 +121,12 @@ class DayCostViewController: UIViewController {
   
   private func configureCollectionView() {
     
-//    view.addSubview(collectionView)
-//    collectionView.translatesAutoresizingMaskIntoConstraints = false
-//    NSLayoutConstraint.activate([
-//      collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
-//      collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-//      //      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//      collectionView.heightAnchor.constraint(equalToConstant: 300),
-//      collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-//    ])
+
     view.addSubview(vTagButton)
     vTagButton.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
       vTagButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
       vTagButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-      //      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//      vTagButton.heightAnchor.constraint(equalToConstant: 300),
       vTagButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
     ])
     
@@ -164,8 +154,6 @@ class DayCostViewController: UIViewController {
     NSLayoutConstraint.activate([
       checkButton.topAnchor.constraint(equalTo: vTagButton.bottomAnchor, constant: 30),
       checkButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-      //checkButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-      //checkButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -100),
     ])
     
     view.addSubview(sumLabel)
@@ -202,15 +190,19 @@ class DayCostViewController: UIViewController {
       appearAlert()
       return
     }
+    guard let memo = memoTextField.text else { return }
+    guard let money = textField.text, let price = Int(money) else { return }
     
-    let cost = CostModel(tag: tag, memo: "test", price: 1000)
+    let cost = CostModel(tag: tag.rawValue, memo: memo, price: price)
     delegate?.checkAction(cost: cost)
     dismiss(animated: true)
   }
   
   private func appearAlert() {
-    let alertController = UIAlertController()
-    let okAction = UIAlertAction(title: "태그를 골라주세요.", style: .default, handler: nil)
+    let alertController = UIAlertController(title: "태그를 골라주세요 ",
+                                            message: "빨리용~!",
+                                            preferredStyle: .alert)
+    let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
     alertController.addAction(okAction)
     present(alertController, animated: true)
   }
@@ -244,21 +236,9 @@ extension DayCostViewController: UITextFieldDelegate {
   }
 }
 
-extension DayCostViewController: TagCollectionViewCellDelegate {
-  func didTapTagButtonAction(tagKey: String?) {
-    self.tagKey = tagKey
-    
-    guard let tagModel = TagData.tags[tagKey!] else { return }
-    let tagData = tagModel
-    print("didTapTagButtonAction", tagData.name)
-  }
-  
-  
-  
-}
 
 extension DayCostViewController: TagButtonViewDelegate {
-  func tagButtonsDidTap(tagKey: String) {
+  func tagButtonsDidTap(tagKey: TagKey) {
     self.tagKey = tagKey
   }
 }

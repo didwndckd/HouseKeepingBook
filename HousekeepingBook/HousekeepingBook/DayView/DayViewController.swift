@@ -15,6 +15,7 @@ class DayViewController: UIViewController {
     private let budgetLabel = UILabel()
     private let plusButton = UIButton()
     private lazy var tableView = UITableView(frame: .zero)
+    private var date = Date()
     private var baseBudget: Int?
     private var budget = 0 {
         didSet {
@@ -59,16 +60,11 @@ class DayViewController: UIViewController {
     }
     
   @objc func plusButtonAction(button: UIButton) {
-//            let dayCostViewController = DayCostViewController()
-//            dayCostViewController.delegate = self
-//            present(dayCostViewController, animated: true)
     
-    let vc = CostDetailViewController()
-    vc.modalPresentationStyle = .overFullScreen
-    present(vc, animated: true)
+            let dayCostViewController = DayCostViewController()
+            dayCostViewController.delegate = self
+            present(dayCostViewController, animated: true)
     
-//    let vc = MonthCostViewController()
-//    present(vc, animated: true)
     
   }
   
@@ -86,6 +82,7 @@ class DayViewController: UIViewController {
         // MARK: - TableView UI
         tableView.register(DayViewCell.self, forCellReuseIdentifier: "cell")
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.rowHeight = 70
         
         // MARK: - Button UI
@@ -146,10 +143,18 @@ extension DayViewController: UITableViewDataSource {
     }
 }
 
+extension DayViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let costDetailViewController = CostDetailViewController()
+        costDetailViewController.modalPresentationStyle = .overFullScreen
+        present(costDetailViewController, animated: true)
+    }
+}
+
 extension DayViewController: DayCostViewControllerDelegat {
     func checkAction(cost: CostModel) {
         costData.append(cost)
         tableView.reloadData()
-        DataPicker.shared.setData(date: Date(), datas: costData)
+        DataPicker.shared.setData(date: date, datas: costData)
     }
 }
