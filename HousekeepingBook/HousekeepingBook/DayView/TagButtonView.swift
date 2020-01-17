@@ -41,6 +41,7 @@ class TagButtonView: UIView {
   
   func createTagButton(buttonSize: CGFloat, fontSize: CGFloat, cornerRadius: CGFloat) {
     for (index, value) in TagData.tagHeads.enumerated() {
+        
       let tempButton = TagButton(tagKey: value)
       tagButtons.append(tempButton)
       tempButton.tag = index
@@ -81,8 +82,11 @@ class TagButtonView: UIView {
     }
   }
   @objc private func tagButtonAction(_ sender: TagButton) {
-    tagButtons[sender.tag].shadow()
+    print(sender.tagKey)
+    print(sender.tag)
+    
     tagButtons[selectButtonTag].unShadow()
+    tagButtons[sender.tag].shadow()
     selectButtonTag = sender.tag
     
     delegate?.tagButtonsDidTap(tagKey: sender.tagKey)
