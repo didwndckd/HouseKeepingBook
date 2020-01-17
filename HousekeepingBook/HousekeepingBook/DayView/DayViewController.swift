@@ -62,7 +62,15 @@ class DayViewController: UIViewController {
 //        baseBudget = budget
 //        self.budget = budget
         
+        let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
+        let days = DataPicker.shared.howManyDaysInMonth(date: Date())
         
+        guard let mBudget = monthBudget else { return }
+        guard let count = days else { return }
+        
+        let budget = mBudget / count
+        baseBudget = budget
+        self.budget = budget
         
         // - [ ] budget 값이 바뀔 때마다 색 변경해야 함
         

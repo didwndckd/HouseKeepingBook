@@ -51,7 +51,6 @@ class TagButtonView: UIView {
       tempButton.backgroundColor = TagData.tags[value.rawValue]?.color
       tempButton.addTarget(self, action: #selector(tagButtonAction(_:)), for: .touchUpInside)
       self.addSubview(tempButton)
-      
       tempButton.translatesAutoresizingMaskIntoConstraints = false
       tempButton.widthAnchor.constraint(equalToConstant: Padding.buttonSize + buttonSize).isActive = true
       tempButton.heightAnchor.constraint(equalToConstant: Padding.buttonSize + buttonSize).isActive = true
