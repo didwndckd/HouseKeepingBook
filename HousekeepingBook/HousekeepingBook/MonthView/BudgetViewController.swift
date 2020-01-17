@@ -10,7 +10,7 @@ import UIKit
 // 월별 컨트롤러 -> 월 예산 설정 컨트롤러
 
 protocol BudgitViewControllerDelegate: class {
-    func setBudget()
+    func setBudget(budget: Int)
 }
 
 class BudgetViewController: UIViewController {
@@ -34,7 +34,9 @@ class BudgetViewController: UIViewController {
     }
     
     private func setTextField() {
-        guard let budget = budget else { return }
+        guard let budget = budget else {
+            return
+        }
         textField.text = "\(budget)"
     }
     
@@ -49,7 +51,7 @@ class BudgetViewController: UIViewController {
         guard let money = Int(text) else { return }
         
         DataPicker.shared.setMonthBuget(month: date, budget: money)
-        delegate?.setBudget()
+        delegate?.setBudget(budget: money)
         
         textField.resignFirstResponder()
         dismiss(animated: true, completion: nil)
