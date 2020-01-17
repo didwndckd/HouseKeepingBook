@@ -18,7 +18,7 @@ class TagButtonView: UIView {
     static let inset: CGFloat = 16
     static let buttonXSpace: CGFloat = 40
     static let buttonYSpace: CGFloat = 8
-    static let buttonSize: CGFloat = 80
+    static let buttonSize: CGFloat = 70
   }
   
   weak var delegate: TagButtonViewDelegate?
@@ -44,8 +44,8 @@ class TagButtonView: UIView {
       let tempButton = TagButton(tagKey: value)
       tagButtons.append(tempButton)
       tempButton.tag = index
-      tempButton.layer.cornerRadius = 16 + cornerRadius
-      tempButton.titleLabel?.font = UIFont.systemFont(ofSize: 25 + fontSize, weight: .bold)
+      tempButton.layer.cornerRadius = 35 + cornerRadius
+        tempButton.titleLabel?.font = UIFont.systemFont(ofSize: 20 + fontSize, weight: .medium)
       tempButton.setTitle(TagData.tags[value.rawValue]?.name, for: .normal)
       tempButton.setTitleColor(.white, for: .normal)
       tempButton.backgroundColor = TagData.tags[value.rawValue]?.color

@@ -37,10 +37,30 @@ class DayViewController: UIViewController {
         layout()
         costData = DataPicker.shared.getData(date: Date())
         tableView.rowHeight = 60
+        setBudget()
+    }
+    
+    private func setBudget() {
+        
+        
+        budget = baseBudget ?? 0
+        for data in costData {
+            budget -= data.price
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+//
+//        let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
+//        let days = DataPicker.shared.howManyDaysInMonth(date: Date())
+//
+//        guard monthBudget != 0 else { return }
+//        guard let count = days else { return }
+//
+//        let budget = monthBudget / count
+//        baseBudget = budget
+//        self.budget = budget
         
         let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
         let days = DataPicker.shared.howManyDaysInMonth(date: Date())
@@ -54,7 +74,7 @@ class DayViewController: UIViewController {
         
         // - [ ] budget 값이 바뀔 때마다 색 변경해야 함
         
-        print(monthBudget, count)
+//        print(monthBudget, count)
         
         
     }
@@ -156,5 +176,6 @@ extension DayViewController: DayCostViewControllerDelegat {
         costData.append(cost)
         tableView.reloadData()
         DataPicker.shared.setData(date: date, datas: costData)
+        setBudget()
     }
 }
