@@ -24,7 +24,7 @@ class TagButtonView: UIView {
   weak var delegate: TagButtonViewDelegate?
   
   private var tagButtons = [UIButton]()
-  private var selectButtonTag = 0
+    private var selectButtonTag: Int?
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -82,9 +82,10 @@ class TagButtonView: UIView {
   }
   @objc private func tagButtonAction(_ sender: TagButton) {
     tagButtons[sender.tag].shadow()
-    tagButtons[selectButtonTag].unShadow()
+    if let tempTag = selectButtonTag {
+        tagButtons[tempTag].unShadow()
+    }
     selectButtonTag = sender.tag
-    
     delegate?.tagButtonsDidTap(tagKey: sender.tagKey)
   }
   
