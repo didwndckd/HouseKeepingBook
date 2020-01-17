@@ -89,7 +89,7 @@ class DayViewController: UIViewController {
         budgetLabel.font = UIFont.systemFont(ofSize: 40, weight: .heavy)
         
         // MARK: - TableView UI
-        tableView.register(DayViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CustomCell.self, forCellReuseIdentifier: "cell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 70
@@ -136,17 +136,15 @@ extension DayViewController: UITableViewDataSource {
         return costData.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: DayViewCell
         
-        if let biningCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? DayViewCell {
-            cell = biningCell
-        }else {
-            cell = DayViewCell(style: .default, reuseIdentifier: "cell")
-            
-        }
-        let key = costData[indexPath.row].tag
-        let name = TagData.tags[key]?.name
-        cell.textLabel?.text = name
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
+        let data = costData[indexPath.row]
+        cell.titlelabel.text = data.memo
+        let price = DataPicker.shared.moneyForamt(price: data.price)
+        cell.priceLabel.text = price
+        cell.iconView.backgroundColor = TagData.tags[data.tag]?.color
+        cell.iconView.text = TagData.tags[data.tag]?.name
+        
         return cell
         
     }
@@ -156,6 +154,11 @@ extension DayViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let costDetailViewController = CostDetailViewController()
         costDetailViewController.modalPresentationStyle = .overFullScreen
+        costDetailViewController.tag = costData[indexPath.row].tag
+        costDetailViewController.memo = costData[indexPath.row].memo
+        costDetailViewController.price = costData[indexPath.row].price
+        costDetailViewController.position = indexPath.row
+        costDetailViewController.date = date
         present(costDetailViewController, animated: true)
     }
 }

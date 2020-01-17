@@ -20,10 +20,27 @@ import UIKit
 class CostDetailViewController: UIViewController {
   
   // MARK: - Property
+    var position: Int?
   var date: Date?
-  var tag: TagKey = .foodTag
-  var memo = "Memo Test!!"
-  var price = -1
+    var _tag = ""
+    var tag: String {
+        get {
+            return  _tag
+        }
+        set{
+            _tag = newValue
+            let titleTag = TagData.tags[newValue]
+            tagButton.setTitle(titleTag?.name, for: .normal)
+            tagButton.backgroundColor = titleTag?.color
+        }
+    }
+  var memo = ""
+    
+    var price = -1 {
+        didSet {
+            totalTextField.text = "\(price)"
+        }
+    }
   private let baseView = UIView()
   private let mainLabel = UILabel()
   private let dateLabel = UILabel()
@@ -31,7 +48,7 @@ class CostDetailViewController: UIViewController {
   private let sumLabel = UILabel()
   private let totalTextField = UITextField()
   private let totalLine = UIView()
-  private let memoLabel = UILabel()
+  private let memoLabel = UITextField()
   private var memoView = UIView()
   private let tagButton = UIButton()
   private var toggle = false
@@ -40,6 +57,7 @@ class CostDetailViewController: UIViewController {
   // MARK: - vTagButton
   private lazy var vTagButton: TagButtonView = {
     let button = TagButtonView(buttonSize: -20, fontSize: -7, cornerRadius: -10)
+    button.delegate = self
 //    temp.delegate = self
     return button
   }()
@@ -69,6 +87,8 @@ class CostDetailViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    
+    
     NotificationCenter.default.addObserver(
         self,
         selector: #selector(keyboardWillShow),
@@ -83,6 +103,13 @@ class CostDetailViewController: UIViewController {
     
     alertAutolayoutUI()
     baseUI()
+    
+    if let date = date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy. MM. dd"
+        let timeStemp = formatter.string(from: date)
+        dateLabel.text = timeStemp
+    }
   }
   
   
@@ -251,7 +278,6 @@ class CostDetailViewController: UIViewController {
     
     vTagButton.alpha = 0
     
-    tagButton.setTitle(TagData.tags[TagKey.beautyTag.rawValue]?.name, for: .normal)
     tagButton.setTitleColor(.white, for: .normal)
     tagButton.backgroundColor = TagData.tags[TagKey.beautyTag.rawValue]?.color
     tagButton.addTarget(self, action: #selector(didTapTagButton(_:)), for: .touchUpInside)
@@ -261,7 +287,6 @@ class CostDetailViewController: UIViewController {
     memoLabel.font = UIFont(name: "Arial", size: 16)
     memoLabel.textAlignment = .center
     memoLabel.text = self.memo
-    
     memoView.backgroundColor = #colorLiteral(red: 0.9215686275, green: 0.9215686275, blue: 0.9215686275, alpha: 1)
   
   }
@@ -321,4 +346,14 @@ extension CostDetailViewController: UITextFieldDelegate {
           return false
       }
   }
+}
+
+extension CostDetailViewController: TagButtonViewDelegate {
+    func tagButtonsDidTap(tagKey: TagKey) {
+        self.tag = tagKey.rawValue
+        
+        // 애니메이션
+    }
+    
+    
 }

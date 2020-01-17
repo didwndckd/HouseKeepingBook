@@ -41,6 +41,7 @@ class TagButtonView: UIView {
   
   func createTagButton(buttonSize: CGFloat, fontSize: CGFloat, cornerRadius: CGFloat) {
     for (index, value) in TagData.tagHeads.enumerated() {
+        
       let tempButton = TagButton(tagKey: value)
       tagButtons.append(tempButton)
       tempButton.tag = index
