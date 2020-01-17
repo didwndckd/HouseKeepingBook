@@ -16,7 +16,7 @@ protocol CustomCalendarDelegate: class {
 class CustomCalendar: UIView {
     
     private var selectDay = false
-    
+    private var dailyBudget: Int?
     private let calendar = JTACMonthView()
     private let calendarData = Calendar(identifier: .gregorian)
     weak var delegate: CustomCalendarDelegate?
@@ -31,6 +31,10 @@ class CustomCalendar: UIView {
         year = calendarYear
         month = calenderMonth
         
+        
+        
+        getDailyBudget()
+        
         calendar.calendarDataSource = self
         calendar.calendarDelegate = self
         calendar.register(DateCell.self, forCellWithReuseIdentifier: "DateCell")
@@ -40,7 +44,16 @@ class CustomCalendar: UIView {
         
     }
     
+    func getDailyBudget() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MM dd"
+        let dateOfBudget = formatter.date(from: "\(year) \(month) 01")!
+        dailyBudget = DataPicker.shared.getDalyBudget(date: dateOfBudget)
+//        print("=======================\(dailyBudget)---------------------------")
+    }
+    
     func reloadCalender() {
+        getDailyBudget()
         calendar.reloadData()
     }
     
@@ -123,7 +136,34 @@ extension CustomCalendar: JTACMonthViewDelegate {
     
     func calendar(_ calendar: JTACMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTACDayCell {
 //        print("makecell")
+        
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "DateCell", for: indexPath) as! DateCell
+        
+        if var totalConsum = dailyBudget {
+            let consums = DataPicker.shared.getData(date: date)
+            for cost in consums {
+                totalConsum -= cost.price
+            }
+
+            let goodState = "hand.thumbsup"
+            let badState = "hand.thumbsdown"
+            let simbole: String
+            if totalConsum > 0 {
+                simbole = goodState
+                cell.stateImageView.tintColor = .green
+            }else {
+                cell.stateImageView.tintColor = .systemPink
+                simbole = badState
+            }
+
+            cell.stateImageView.isHidden = false
+            cell.stateImageView.image = UIImage(systemName: simbole)
+
+        }else {
+            cell.stateImageView.isHidden = true
+        }
+        
+        
         self.calendar(calendar, willDisplay: cell, forItemAt: date, cellState: cellState, indexPath: indexPath)
         return cell
     }
