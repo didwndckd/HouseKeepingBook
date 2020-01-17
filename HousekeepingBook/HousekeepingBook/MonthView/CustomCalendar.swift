@@ -173,7 +173,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
         let cellTime = setCurrentTimeZone(state: cellState.date)
         //print("current: \(currentTime) | cellTime \(cellTime)")
         if currentTime == cellTime {
-            cell.dateLabel.textColor = MyColors.green
+            cell.dateLabel.textColor = MyColors.red
             cell.todayLabel.isHidden = false
         }else {
             

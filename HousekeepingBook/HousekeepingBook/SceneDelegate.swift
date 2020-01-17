@@ -17,14 +17,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let dayVC = DayViewController()
-        dayVC.tabBarItem = UITabBarItem(title: "Today", image: nil
-            , tag: 0)
+        dayVC.tabBarItem = UITabBarItem(title: "Today",
+                                        image: UIImage(systemName: "plus.square.on.square"),
+                                        // "plus.square" // plus.circle // plusminus.circle // wonsign.circle // wonsign.square
+                                        tag: 0)
         let monthVC = MonthViewController()
-        monthVC.tabBarItem = UITabBarItem(title: "Month", image: nil
-        , tag: 1)
+        monthVC.tabBarItem = UITabBarItem(title: "Month",
+                                          image: UIImage(systemName: "calendar"),
+                                          tag: 1)
         let statsVC = StatsViewController()
-        statsVC.tabBarItem = UITabBarItem(title: "Stats", image: nil
-        , tag: 2)
+        statsVC.tabBarItem = UITabBarItem(title: "Stats",
+                                          image: UIImage(systemName: "line.horizontal.3.decrease"),
+//            image: UIImage(systemName: "wonsign.square"),
+                                          tag: 2)
         
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [dayVC, monthVC, statsVC]

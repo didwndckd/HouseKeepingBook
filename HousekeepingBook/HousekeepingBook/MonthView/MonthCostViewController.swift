@@ -27,9 +27,7 @@ class MonthCostViewController: UIViewController {
             }
         }
     }
-    
-    
-    
+
   lazy var tableView: UITableView = {
     let tableView = UITableView(frame: .zero)
     tableView.dataSource = self
