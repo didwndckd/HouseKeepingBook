@@ -6,6 +6,15 @@
 //  Copyright © 2020 Jisng. All rights reserved.
 //
 
+/*
+추가 기능 :
+ - Memo도 수정할 수 있도록 TextField여야 함
+ - 메모, 금액 적정 간격 (안정적인 구조)
+ - 리턴키 누르면 키보드 내려감
+ - 키보드 외 화면키 누르면 키보드 내려감
+ - tagbutton
+ */
+
 import UIKit
 
 class CostDetailViewController: UIViewController {
@@ -30,7 +39,7 @@ class CostDetailViewController: UIViewController {
 
   // MARK: - vTagButton
   private lazy var vTagButton: TagButtonView = {
-    let button = TagButtonView(buttonSize: -20, fontSize: -7, cornerRadius: 10)
+    let button = TagButtonView(buttonSize: -20, fontSize: -7, cornerRadius: -10)
 //    temp.delegate = self
     return button
   }()
@@ -248,16 +257,19 @@ class CostDetailViewController: UIViewController {
     tagButton.addTarget(self, action: #selector(didTapTagButton(_:)), for: .touchUpInside)
     tagButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
     tagButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
-    tagButton.layer.cornerRadius = 26
     
     memoLabel.font = UIFont(name: "Arial", size: 16)
     memoLabel.textAlignment = .center
     memoLabel.text = self.memo
     
     memoView.backgroundColor = #colorLiteral(red: 0.9215686275, green: 0.9215686275, blue: 0.9215686275, alpha: 1)
-    memoView.layer.cornerRadius = 20
   
   }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tagButton.layer.cornerRadius = tagButton.frame.width/2
+    }
    
   
   
