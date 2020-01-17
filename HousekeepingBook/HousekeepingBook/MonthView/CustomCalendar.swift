@@ -15,16 +15,22 @@ protocol CustomCalendarDelegate: class {
 
 class CustomCalendar: UIView {
     
-    var month = 0
-    var year = 0
-    let calendar = JTACMonthView()
-    let calendarData = Calendar(identifier: .gregorian)
+    private var selectDay = false
+    
+    private let calendar = JTACMonthView()
+    private let calendarData = Calendar(identifier: .gregorian)
     weak var delegate: CustomCalendarDelegate?
-
+    
+    var year = 0
+    var month: Int = 0
+    
+    
+    
     init(calenderMonth: Int, calendarYear: Int) {
         super.init(frame: .zero)
-        month = calenderMonth
         year = calendarYear
+        month = calenderMonth
+        
         calendar.calendarDataSource = self
         calendar.calendarDelegate = self
         calendar.register(DateCell.self, forCellWithReuseIdentifier: "DateCell")
@@ -32,6 +38,10 @@ class CustomCalendar: UIView {
         calendar.backgroundColor = .white
         setupUI()
         
+    }
+    
+    func reloadCalender() {
+        calendar.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -112,7 +122,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
     
     
     func calendar(_ calendar: JTACMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTACDayCell {
-        print("makecell")
+//        print("makecell")
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "DateCell", for: indexPath) as! DateCell
         self.calendar(calendar, willDisplay: cell, forItemAt: date, cellState: cellState, indexPath: indexPath)
         return cell
@@ -163,9 +173,11 @@ extension CustomCalendar: JTACMonthViewDelegate {
         let cellTime = setCurrentTimeZone(state: cellState.date)
         //print("current: \(currentTime) | cellTime \(cellTime)")
         if currentTime == cellTime {
-            cell.selectedView.isHidden = false
+            cell.dateLabel.textColor = MyColors.green
+            cell.todayLabel.isHidden = false
         }else {
-            cell.selectedView.isHidden = true
+            
+            cell.todayLabel.isHidden = true
         }
         
         
@@ -175,8 +187,13 @@ extension CustomCalendar: JTACMonthViewDelegate {
         
         if cellState.isSelected {
             cell.selectedView.isHidden = false
+            guard selectDay else { return selectDay = true }
+            delegate?.presentMonthCostView(date: cellState.date)
+            
+            
         }else {
             cell.selectedView.isHidden = true
+            selectDay = false
         }
         
     }

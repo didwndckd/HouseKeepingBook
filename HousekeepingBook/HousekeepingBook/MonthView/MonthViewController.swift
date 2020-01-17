@@ -40,6 +40,7 @@ class MonthViewController: UIViewController {
         }
     }
     
+    
     var dayBudget = 0
     var budget: Int? {
         didSet {
@@ -55,6 +56,7 @@ class MonthViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print("MonthViewcontroller viewWillAppear")
     }
     
     override func viewDidLoad() {
@@ -73,8 +75,45 @@ class MonthViewController: UIViewController {
         getDateBudget()
         
         setupCalenders()
-        
+        setBudget(date: date)
         scrollView.delegate = self
+        
+        print(year, month)
+    }
+    
+    private func setBudget(date: Date) {
+        
+        
+        guard var thisMonthBudget = DataPicker.shared.getMonthBudget(month: date) else {
+            budget = nil
+            return
+        }
+        let count = DataPicker.shared.howManyDaysInMonth(date: date) ?? 0
+        
+        for day in 1...count {
+            let yearStr = DataPicker.shared.setFormatter(date: date, format: "yyyy")
+            let monthStr = DataPicker.shared.setFormatter(date: date, format: "MM")
+            let formatter = DateFormatter()
+            
+            guard let year = Int(yearStr), let month = Int(monthStr)  else {
+                return
+            }
+            let components = DateComponents(calendar: calendarData, year: year, month: month, day: day)
+            guard let key = components.date else { return print("키 변환 실패")}
+            
+            
+            
+            let datas = DataPicker.shared.getData(date: key)
+            
+            for data in datas {
+                thisMonthBudget -= data.price
+                print("성공쓰")
+            }
+            
+        }
+        
+        budget = thisMonthBudget
+        
     }
     
     
@@ -83,8 +122,9 @@ class MonthViewController: UIViewController {
         print("didTapBudgetButton()")
         let budgetViewController = BudgetViewController()
         budgetViewController.delegate = self
-        let budget = DataPicker.shared.getMonthBudget(month: date)
         budgetViewController.budget = budget
+        let confonents = DateComponents(calendar: calendarData, year: year, month: month, day: 1)
+        guard let date = confonents.date else { return }
         budgetViewController.date = date
         present(budgetViewController, animated: true)
     }
@@ -159,10 +199,11 @@ class MonthViewController: UIViewController {
         scrollView.contentOffset.x = scrollView.bounds.width
     }
     
+    var calenders: [CustomCalendar] = []
     
     private func setupCalenders() {
         
-        var calenders: [CustomCalendar] = []
+        
         
         for i in 0...2 {
             
@@ -172,6 +213,8 @@ class MonthViewController: UIViewController {
             let customCalendar = CustomCalendar(calenderMonth: tempMonth, calendarYear: tempYear)
             scrollView.addSubview(customCalendar)
             customCalendar.translatesAutoresizingMaskIntoConstraints = false
+            customCalendar.delegate = self
+            
             
             let leading = i == 0 ? scrollView.leadingAnchor : calenders[i - 1].trailingAnchor
             
@@ -187,19 +230,101 @@ class MonthViewController: UIViewController {
         }
     }
     
+    func setCalendarMonthData(year: Int, month: Int) -> Date?{
+        let dateComponents = DateComponents(
+            calendar: calendarData,
+            year: year,
+            month: month,
+            day: 1)
+        
+        let date = dateComponents.date
+        return date
+        
+    }
+    
+    func setCalendars (year: Int, month: Int, calendar: CustomCalendar) {
+        var year = year
+        var month = month
+        
+        if month > 12 {
+            month = 1
+            year += 1
+        }else if month < 1 {
+            month = 12
+            year -= 1
+        }
+        
+        calendar.year = year
+        calendar.month = month
+        calendar.reloadCalender()
+    }
+    
     
 }
 
+extension MonthViewController: CustomCalendarDelegate {
+    func presentMonthCostView(date: Date) {
+        let monthCostViewController = MonthCostViewController()
+        monthCostViewController.date = date
+        present(monthCostViewController, animated: true)
+        
+    }
+    
+    
+    
+    
+}
+
+
+
+
+
+
 extension MonthViewController: UIScrollViewDelegate {
+    
+    
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let index = scrollView.contentOffset.x / scrollView.bounds.width
-        print(index)
+        
+        if index == 0 {
+            print("-")
+            month -= 1
+            print(year, month)
+            
+            let comfonents = DateComponents(calendar: calendarData, year: year, month: month, day: 1)
+            if let date = comfonents.date {
+                setBudget(date: date)
+            }
+            
+            setCalendars(year: year, month: month, calendar: calenders[1])
+            scrollView.contentOffset.x = scrollView.bounds.width
+            setCalendars(year: year, month: month - 1, calendar: calenders[0])
+            setCalendars(year: year, month: month - 1, calendar: calenders[2])
+        }
+        else if index == 2 {
+            print("+")
+            month += 1
+            print(year, month)
+            
+            let comfonents = DateComponents(calendar: calendarData, year: year, month: month, day: 1)
+            if let date = comfonents.date {
+                setBudget(date: date)
+            }
+            setCalendars(year: year, month: month, calendar: calenders[1])
+            scrollView.contentOffset.x = scrollView.bounds.width
+            setCalendars(year: year, month: month + 1, calendar: calenders[0])
+            setCalendars(year: year, month: month + 1, calendar: calenders[2])
+            
+        }
+        
+        
     }
 }
 
 extension MonthViewController: BudgitViewControllerDelegate {
-    func setBudget() {
-        budget = DataPicker.shared.getMonthBudget(month: date)
+    func setBudget(budget: Int) {
+        self.budget = budget
     }
     
     

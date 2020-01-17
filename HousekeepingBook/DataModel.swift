@@ -16,7 +16,7 @@ class DataPicker {
     
     let monthFormat = "yyyyMM"
     let dateFormat = "yyyyMMdd"
-    let dateTitleFormat = "yyyy MM dd"
+    let dateTitleFormat = "yyyy. MM. dd"
     
     
     // date format 세팅 메서드
@@ -44,9 +44,11 @@ class DataPicker {
     }
     
     
-    func getMonthBudget (month: Date) -> Int {
+    func getMonthBudget (month: Date) -> Int? {
         let key = "budget" + setFormatter(date: month, format: monthFormat)
-        let budget = UserDefaults.standard.integer(forKey: key)
+        guard let budget = UserDefaults.standard.object(forKey: key) as? Int else {
+            return nil
+        }
         return budget
     }
     
@@ -142,6 +144,14 @@ class DataPicker {
                  (currentYear, currentMonth),
                  (nextYear, nextMonth)]
     }
+    
+    func getDalyBudget(date: Date) -> Int? {
+        guard let monthBudget = getMonthBudget(month: date) else { return nil}
+        guard let count = howManyDaysInMonth(date: date) else {return nil}
+        let dalyBudget = monthBudget / count
+        return dalyBudget
+    }
+    
     
     
     

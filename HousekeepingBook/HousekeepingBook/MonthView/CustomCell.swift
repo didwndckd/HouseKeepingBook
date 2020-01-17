@@ -9,7 +9,7 @@
 import UIKit
 
 class CustomCell: UITableViewCell {
-  let iconView = UIImageView()
+  let iconView = UILabel()
   let titlelabel = UILabel()
   let priceLabel = UILabel()
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

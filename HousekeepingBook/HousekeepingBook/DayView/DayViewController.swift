@@ -45,10 +45,10 @@ class DayViewController: UIViewController {
         let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
         let days = DataPicker.shared.howManyDaysInMonth(date: Date())
         
-        guard monthBudget != 0 else { return }
+        guard let mBudget = monthBudget else { return }
         guard let count = days else { return }
         
-        let budget = monthBudget / count
+        let budget = mBudget / count
         baseBudget = budget
         self.budget = budget
         

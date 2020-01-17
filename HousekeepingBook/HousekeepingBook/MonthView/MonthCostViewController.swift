@@ -13,8 +13,23 @@ class MonthCostViewController: UIViewController {
   
   // MARK: - Property
   
-  //  let date: Date?
-  
+    var datas: [CostModel] = []
+    var date: Date?
+    var budget: Int? {
+        didSet {
+            guard let budget = budget else {
+                moneyLabel.text = "예산 미등록."
+                return
+            }
+            let text = DataPicker.shared.moneyForamt(price: budget)
+            if let text = text {
+            moneyLabel.text = "\(text) 원"
+            }
+        }
+    }
+    
+    
+    
   lazy var tableView: UITableView = {
     let tableView = UITableView(frame: .zero)
     tableView.dataSource = self
@@ -40,7 +55,7 @@ class MonthCostViewController: UIViewController {
     let moneyLabel = UILabel()
     moneyLabel.backgroundColor = .white
     moneyLabel.textColor = ColorZip.midiumGray
-    moneyLabel.text = "30,000원"
+    moneyLabel.text = "0원"
     moneyLabel.textAlignment = .center
     moneyLabel.font = UIFont.systemFont(ofSize: 40)
     return moneyLabel
@@ -71,6 +86,18 @@ class MonthCostViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .white
+    if let date = date {
+        dateLabel.text = DataPicker.shared.getDateTitleForamt(date: date)
+        datas = DataPicker.shared.getData(date: date)
+        budget = DataPicker.shared.getDalyBudget(date: date)
+    }
+    
+    if var budget = budget {
+        for data in datas {
+            budget -= data.price
+        }
+        self.budget = budget
+    }
     
     setUI()
   }
@@ -133,11 +160,36 @@ class MonthCostViewController: UIViewController {
 
 extension MonthCostViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 5
+    return datas.count
   }
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
-    return cell
+//    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
+    
+    if let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomCell {
+        let data = datas[indexPath.row]
+        cell.titlelabel.text = data.memo
+        let price = DataPicker.shared.moneyForamt(price: data.price)
+        cell.priceLabel.text = price
+        cell.iconView.backgroundColor = TagData.tags[data.tag]?.color
+        cell.iconView.text = TagData.tags[data.tag]?.name
+        
+        return cell
+    }else {
+        
+        let data = datas[indexPath.row]
+        let cell = CustomCell(style: .default, reuseIdentifier: "cell")
+        
+        cell.titlelabel.text = data.memo
+        let price = DataPicker.shared.moneyForamt(price: data.price)
+        cell.priceLabel.text = price
+        cell.iconView.backgroundColor = TagData.tags[data.tag]?.color
+        cell.iconView.text = TagData.tags[data.tag]?.name
+    
+        return cell
+        
+    }
+    
+    
   }
 }
 extension MonthCostViewController: UITableViewDelegate {
