@@ -65,12 +65,18 @@ class BudgetViewController: UIViewController {
         textField.borderStyle = .none
         textField.keyboardType = .numberPad
         
-        guideLine.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        guideLine.backgroundColor = MyColors.yellow
         
         button.setTitle("예산 설정", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-        button.backgroundColor = #colorLiteral(red: 0.1294117719, green: 0.2156862766, blue: 0.06666667014, alpha: 1)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+//        button.setTitleColor(MyColors.yellow, for: .normal)
+        button.backgroundColor = MyColors.yellow
         button.layer.cornerRadius = 10
+        button.layer.shadowColor = ColorZip.black.cgColor
+        button.layer.shadowRadius = 2
+        button.layer.shadowOffset = CGSize(width: 2, height: 2)
+        button.layer.shadowOpacity = 0.3
+//        button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(buttonAction(button:)), for: .touchUpInside)
         
         view.addSubview(textField)
