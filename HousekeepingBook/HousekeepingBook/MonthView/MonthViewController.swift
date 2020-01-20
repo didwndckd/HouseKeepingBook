@@ -60,6 +60,9 @@ class MonthViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("MonthViewcontroller viewWillAppear")
+        setBudget(date: date)
+        calenders[1].reloadCalender()
+        
     }
     
     override func viewDidLoad() {
@@ -81,11 +84,13 @@ class MonthViewController: UIViewController {
         getDateBudget()
         
         setupCalenders()
-        setBudget(date: date)
+        
         scrollView.delegate = self
         
         print(year, month)
     }
+    
+    
     
     private func setBudget(date: Date) {
         
@@ -274,6 +279,7 @@ extension MonthViewController: CustomCalendarDelegate {
     func presentMonthCostView(date: Date) {
         let monthCostViewController = MonthCostViewController()
         monthCostViewController.date = date
+        monthCostViewController.delegate = self
         present(monthCostViewController, animated: true)
         
     }
@@ -282,6 +288,14 @@ extension MonthViewController: CustomCalendarDelegate {
     
 }
 
+extension MonthViewController: MonthCostViewControllerDelegate {
+    func reLoadCalendar() {
+        setBudget(date: date)
+        calenders[1].reloadCalender()
+    }
+    
+    
+}
 
 
 

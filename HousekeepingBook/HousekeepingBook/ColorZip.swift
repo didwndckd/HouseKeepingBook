@@ -24,6 +24,7 @@ struct MyColors {
     //    static let yellow = #colorLiteral(red: 0.9249407649, green: 0.9256941676, blue: 0.0286997892, alpha: 1)
     
     // 혹시 .. 색상이 필요하다면 ..
+    static let today = #colorLiteral(red: 0.9643015265, green: 0, blue: 0.9626272321, alpha: 1)
     static let red = #colorLiteral(red: 1, green: 0.5848411918, blue: 0.5491270423, alpha: 1)
     static let lightgray = #colorLiteral(red: 0.9294117647, green: 0.9333333333, blue: 0.9137254902, alpha: 1)
     static let green = #colorLiteral(red: 0.7490196078, green: 0.8823529412, blue: 0.7529411765, alpha: 1)

@@ -213,7 +213,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
         let cellTime = setCurrentTimeZone(state: cellState.date)
         //print("current: \(currentTime) | cellTime \(cellTime)")
         if currentTime == cellTime {
-            cell.dateLabel.textColor = MyColors.red
+            cell.dateLabel.textColor = MyColors.yellow
             cell.todayLabel.isHidden = false
         }else {
             
@@ -227,6 +227,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
         
         if cellState.isSelected {
             cell.selectedView.isHidden = false
+            
             guard selectDay else { return selectDay = true }
             delegate?.presentMonthCostView(date: cellState.date)
             
