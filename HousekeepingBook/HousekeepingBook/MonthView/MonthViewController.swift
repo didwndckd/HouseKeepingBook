@@ -60,8 +60,12 @@ class MonthViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("MonthViewcontroller viewWillAppear")
-        setBudget(date: date)
+        
+        let currentMonthComponent = DateComponents(calendar: calendarData, year: year, month: month, day: 1)
+        guard let currentDate = currentMonthComponent.date else {return}
+        setBudget(date: currentDate)
         calenders[1].reloadCalender()
+        
         
     }
     
