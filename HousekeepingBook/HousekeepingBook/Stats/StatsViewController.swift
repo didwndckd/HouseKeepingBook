@@ -61,6 +61,8 @@ class StatsViewController: UIViewController {
         
         tagData.removeAll()
         tagArray.removeAll()
+        dailyKeys.removeAll()
+        dailyData.removeAll()
         
             var tempCost = 0
             let date = Date()
@@ -276,7 +278,11 @@ class StatsViewController: UIViewController {
 
 extension StatsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        tagArray.count
+        if segmented.selectedSegmentIndex == 0 {
+            return tagData.count
+        }else {
+            return dailyKeys.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
