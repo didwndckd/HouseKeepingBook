@@ -49,6 +49,7 @@ class DataPicker {
         guard let budget = UserDefaults.standard.object(forKey: key) as? Int else {
             return nil
         }
+        print("월 돈", budget)
         return budget
     }
     
@@ -146,7 +147,7 @@ class DataPicker {
     }
     
     func getDalyBudget(date: Date) -> Int? {
-        guard let monthBudget = getMonthBudget(month: date) else { return nil}
+        guard let monthBudget = getMonthBudget(month: date) else { return nil }
         guard let count = howManyDaysInMonth(date: date) else {return nil}
         let dalyBudget = monthBudget / count
         return dalyBudget

@@ -13,7 +13,7 @@ class SelectedView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = MyColors.yellow
+        backgroundColor = MyColors.lightgray
     }
     
     required init?(coder: NSCoder) {

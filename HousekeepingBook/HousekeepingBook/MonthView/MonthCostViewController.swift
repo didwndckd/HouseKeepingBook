@@ -8,23 +8,22 @@
 
 import UIKit
 
+protocol MonthCostViewControllerDelegate: class {
+    func reLoadCalendar()
+}
+
 // 월별 추가버튼 클릭시
 class MonthCostViewController: UIViewController {
   
   // MARK: - Property
-  
+    
+    weak var delegate: MonthCostViewControllerDelegate?
     var datas: [CostModel] = []
     var date: Date?
-    var budget: Int? {
-        didSet {
-            guard let budget = budget else {
-                moneyLabel.text = "예산 미등록."
-                return
-            }
-            let text = DataPicker.shared.moneyForamt(price: budget)
-            if let text = text {
-            moneyLabel.text = "\(text) 원"
-            }
+    var budget: Int = 0 {
+        willSet{
+            let text = DataPicker.shared.moneyForamt(price: newValue)
+            moneyLabel.text = text
         }
     }
 
@@ -67,17 +66,36 @@ class MonthCostViewController: UIViewController {
   
   let checkButton: UIButton = {
     let checkButton = UIButton()
-    checkButton.setTitle(" Check ", for: .normal)
-    checkButton.setTitleColor(.white, for: .normal)
-    checkButton.backgroundColor = ColorZip.lightGray
-    //    checkButton.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
-    checkButton.titleLabel?.font = UIFont(name: "Arial", size: 25)
-    checkButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
-    checkButton.layer.cornerRadius = 10
+    checkButton.setTitle("+", for: .normal)
+    checkButton.titleLabel?.font = UIFont.systemFont(ofSize: 40, weight: .heavy)
+    checkButton.layer.shadowOpacity = 0.5
+    checkButton.layer.shadowColor = ColorZip.midiumGray.cgColor
+    checkButton.layer.shadowRadius = 4
+    checkButton.layer.shadowOffset = CGSize(width: 4, height: 4)
+    checkButton.backgroundColor = MyColors.yellow
+    checkButton.addTarget(self, action: #selector(didTapCheckButton), for: .touchUpInside)
     return checkButton
   }()
+    
+    @objc func didTapCheckButton() {
+        print("MonthCostViewController: didTapCheckButton()")
+        let dayCostViewController = DayCostViewController()
+        dayCostViewController.delegate = self
+        present(dayCostViewController, animated: true)
+    }
   
-  
+    
+//  private func setBudget() {
+//    guard let date = date else { return }
+//      if var budget = DataPicker.shared.getDalyBudget(date: date) {
+//
+//          for i in DataPicker.shared.getData(date: date) {
+//              budget -= i.price
+//          }
+//          self.budget = budget
+//      }
+//
+//  }
   
   
   // MARK: - View Life Cycle
@@ -87,14 +105,7 @@ class MonthCostViewController: UIViewController {
     if let date = date {
         dateLabel.text = DataPicker.shared.getDateTitleForamt(date: date)
         datas = DataPicker.shared.getData(date: date)
-        budget = DataPicker.shared.getDalyBudget(date: date)
-    }
-    
-    if var budget = budget {
-        for data in datas {
-            budget -= data.price
-        }
-        self.budget = budget
+        
     }
     
     setUI()
@@ -103,10 +114,31 @@ class MonthCostViewController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     tableView.reloadData()
+    print("MonthCostViewController ViewWillAppear")
+    setBudget()
   }
   
+    private func setBudget() {
+        guard let date = date else { return }
+        if var budget = DataPicker.shared.getDalyBudget(date: date) {
+            
+            for i in DataPicker.shared.getData(date: date) {
+                budget -= i.price
+            }
+            self.budget = budget
+        }
+        
+    }
+    
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        delegate?.reLoadCalendar()
+    }
   
   func setUI() {
+    
     let guide = view.safeAreaLayoutGuide
     view.addSubview(dateLabel)
     dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -147,8 +179,14 @@ class MonthCostViewController: UIViewController {
     NSLayoutConstraint.activate([
       checkButton.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: Standard.space),
       checkButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+      checkButton.widthAnchor.constraint(equalTo: checkButton.heightAnchor),
     ])
   }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        checkButton.layer.cornerRadius = checkButton.bounds.width / 2
+    }
   
   private struct Standard {
     static let space: CGFloat = 30
@@ -193,7 +231,63 @@ extension MonthCostViewController: UITableViewDataSource {
 extension MonthCostViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     print(indexPath.row)
-    //        present(상세 컨트롤러, animated: true)
-    // 선택 된 indexPath 로 값을 넘긴다.
+    let cost = CostDetailViewController()
+    cost.delegate = self
+    let data = datas[indexPath.row]
+    cost.date = date
+    cost.price = data.price
+    cost.memo = data.memo
+    cost.tag = data.tag
+    cost.position = indexPath
+    cost.delegate = self
+    
+    cost.modalPresentationStyle = .overFullScreen
+    present(cost, animated: true)
   }
+
+
+
+
 }
+
+
+extension MonthCostViewController: CostDetailViewControllerDelegate {
+    
+   func updateActiom(position: IndexPath?, data: CostModel) {
+        guard let indexPath = position else { return }
+        guard let date = date else { return }
+        datas[indexPath.row] = data
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        DataPicker.shared.setData(date: date, datas: datas)
+        setBudget()
+    }
+    
+    func deleteAction(position: IndexPath?, price: Int) {
+        guard let i = position else { return }
+        guard let date = date else { return }
+        datas.remove(at: i.row)
+        tableView.deleteRows(at: [i], with: .automatic)
+        DataPicker.shared.setData(date: date, datas: datas)
+        setBudget()
+    }
+    
+    
+}
+
+
+extension MonthCostViewController: DayCostViewControllerDelegat {
+    func checkAction(cost: CostModel) {
+        datas.append(cost)
+        tableView.reloadData()
+        
+        guard let date = date else {return print("MonthCostViewController: no date")}
+        print(date)
+        DataPicker.shared.setData(date: date, datas: datas)
+        setBudget()
+    }
+    
+    
+}
+
+
+

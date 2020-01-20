@@ -8,10 +8,15 @@
 
 import UIKit
 
+protocol CostDetailViewControllerDelegate: class {
+    func deleteAction(position: IndexPath?, price: Int)
+    func updateActiom(position: IndexPath?, data: CostModel)
+}
+
 class CostDetailViewController: UIViewController {
     
     // MARK: - Property
-    var position: Int?
+    var position: IndexPath?
     var date: Date?
     var _tag = ""
     var tag: String {
@@ -25,8 +30,18 @@ class CostDetailViewController: UIViewController {
             tagButton.backgroundColor = titleTag?.color
         }
     }
-    var memo = ""
     
+    
+    var memo: String = "" {
+        willSet {
+            memoTextField.text = newValue
+        }
+    }
+    
+    
+    
+    
+    weak var delegate: CostDetailViewControllerDelegate?
     var price = -1 {
         didSet {
             totalTextField.text = "\(price)"
@@ -64,7 +79,7 @@ class CostDetailViewController: UIViewController {
         button.setImage(closeImage, for: .normal)
         button.setPreferredSymbolConfiguration(.init(scale: .default), forImageIn: .normal)
         button.tintColor = .systemPink
-        button.addTarget(self, action: #selector(didTapCloseButton(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTrashButton(_:)), for: .touchUpInside)
         return button
     }()
     private let closeButton: UIButton = {
@@ -81,6 +96,8 @@ class CostDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        print(date)
         
         NotificationCenter.default.addObserver(
             self,
@@ -132,13 +149,15 @@ class CostDetailViewController: UIViewController {
     }
     
     @objc private func didTrashButton(_ sender: UIButton) {
-        // MARK: -  ################ 중창 - 삭제 액션
-        
+        // MARK: -  ################ 중창 - 삭제 액션 완료^^
+        delegate?.deleteAction(position: position, price: price)
         
         dismiss(animated: true)
     }
     
     @objc private func didTapCloseButton(_ sender: UIButton) {
+        
+       
         dismiss(animated: true)
     }
     
@@ -171,6 +190,12 @@ class CostDetailViewController: UIViewController {
     
     @objc func actionOkButton(_ button: UIButton) {
         // MARK: - ################# 중창 - 데이터 넘기기
+        let tag = self.tag
+        let memo = memoTextField.text ?? ""
+        let price = Int(totalTextField.text ?? "") ?? self.price
+        delegate?.updateActiom(position: position, data: CostModel(tag: tag, memo: memo, price: price))
+        dismiss(animated: true)
+        
     }
     
     struct Padding {
@@ -366,13 +391,17 @@ extension CostDetailViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        if string.isEmpty {
+        if textField == totalTextField {
+            if string.isEmpty {
+                return true
+            }
+            if let _ = Int(string){
+                return true
+            } else {
+                return false
+            }
+        }else {
             return true
-        }
-        if let _ = Int(string){
-            return true
-        } else {
-            return false
         }
     }
     

@@ -28,6 +28,7 @@ class DayCostViewController: UIViewController {
     }
     
     // MARK: - Property
+    var priceTextFieldTopAnchor: NSLayoutConstraint?
     
     lazy var priceTextField: UITextField = {
         let textField = UITextField()
@@ -99,6 +100,36 @@ class DayCostViewController: UIViewController {
         view.backgroundColor = .white
         
         selectedTagViewLayout()
+        
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyBoardWillHideNo),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
+        
+    }
+    
+    @objc func keyboardWillShow() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.priceTextFieldTopAnchor?.constant = 5
+            self.view.layoutIfNeeded()
+        })
+        
+    }
+    
+    @objc func keyBoardWillHideNo() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.priceTextFieldTopAnchor?.constant = Standard.spaceTB
+            self.view.layoutIfNeeded()
+        })
+       
     }
     
     override func viewWillLayoutSubviews() {
@@ -112,8 +143,9 @@ class DayCostViewController: UIViewController {
         
         view.addSubview(priceTextField)
         priceTextField.translatesAutoresizingMaskIntoConstraints = false
+        priceTextFieldTopAnchor = priceTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: Standard.spaceTB)
+        priceTextFieldTopAnchor?.isActive = true
         NSLayoutConstraint.activate([
-            priceTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: Standard.spaceTB),
             priceTextField.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             priceTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Standard.spaceLR),
             priceTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Standard.spaceLR)

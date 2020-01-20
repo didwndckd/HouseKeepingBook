@@ -5,17 +5,13 @@ class DayViewController: UIViewController {
     private let plusButton = UIButton()
     private lazy var tableView = UITableView(frame: .zero)
     private var date = Date()
-    private var baseBudget: Int?
-    private var budget = 0 {
-        didSet {
-            guard let _ = baseBudget else {
-                budgetLabel.text = "예산을 설정하세요."
-                return
-            }
-            guard let text = DataPicker.shared.moneyForamt(price: budget) else { return }
-            budgetLabel.text = "\(text) 원"
+    private var budget: Int = 0 {
+        willSet {
+            let formatter = DataPicker.shared.moneyForamt(price: newValue)
+            budgetLabel.text = formatter
         }
     }
+    
     
     var costData: [CostModel] = []
     
@@ -26,47 +22,29 @@ class DayViewController: UIViewController {
         layout()
         costData = DataPicker.shared.getData(date: Date())
         tableView.rowHeight = 60
-        setBudget()
     }
     
     private func setBudget() {
-        
-        
-        budget = baseBudget ?? 0
-        for data in costData {
-            budget -= data.price
+        if var budget = DataPicker.shared.getDalyBudget(date: date) {
+            
+            for i in DataPicker.shared.getData(date: date) {
+                budget -= i.price
+            }
+            self.budget = budget
         }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//
-//        let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
-//        let days = DataPicker.shared.howManyDaysInMonth(date: Date())
-//
-//        guard monthBudget != 0 else { return }
-//        guard let count = days else { return }
-//
-//        let budget = monthBudget / count
-//        baseBudget = budget
-//        self.budget = budget
-        
-        let monthBudget = DataPicker.shared.getMonthBudget(month: Date())
-        let days = DataPicker.shared.howManyDaysInMonth(date: Date())
-        
-        guard let mBudget = monthBudget else { return }
-        guard let count = days else { return }
-        
-        let budget = mBudget / count
-        baseBudget = budget
-        self.budget = budget
-        
-        // - [ ] budget 값이 바뀔 때마다 색 변경해야 함
-        
-//        print(monthBudget, count)
+        costData = DataPicker.shared.getData(date: date)
+        tableView.reloadData()
+        setBudget()
+        print("DayViewController: ViewWillAppear")
         
         
     }
+    
     
   @objc func plusButtonAction(button: UIButton) {
     
@@ -153,11 +131,12 @@ extension DayViewController: UITableViewDataSource {
 extension DayViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let costDetailViewController = CostDetailViewController()
+        costDetailViewController.delegate = self
         costDetailViewController.modalPresentationStyle = .overFullScreen
         costDetailViewController.tag = costData[indexPath.row].tag
         costDetailViewController.memo = costData[indexPath.row].memo
         costDetailViewController.price = costData[indexPath.row].price
-        costDetailViewController.position = indexPath.row
+        costDetailViewController.position = indexPath
         costDetailViewController.date = date
         present(costDetailViewController, animated: true)
     }
@@ -170,4 +149,24 @@ extension DayViewController: DayCostViewControllerDelegat {
         DataPicker.shared.setData(date: date, datas: costData)
         setBudget()
     }
+}
+
+extension DayViewController: CostDetailViewControllerDelegate {
+    func updateActiom(position: IndexPath?, data: CostModel) {
+        guard let indexPath = position else { return }
+        costData[indexPath.row] = data
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        DataPicker.shared.setData(date: date, datas: costData)
+        setBudget()
+    }
+    
+    func deleteAction(position: IndexPath?, price: Int) {
+        guard let i = position else { return }
+        costData.remove(at: i.row)
+        tableView.deleteRows(at: [i], with: .automatic)
+        DataPicker.shared.setData(date: date, datas: costData)
+        setBudget()
+    }
+    
+    
 }
