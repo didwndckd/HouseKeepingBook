@@ -10,7 +10,10 @@ import UIKit
 
 // tab-bar-tag-1: 월별, 캘린더 컨트롤러
 
+
 class MonthViewController: UIViewController {
+    
+    var timer = Timer()
     
     private let scrollView = UIScrollView()
     private let budgetView = UIView()
@@ -57,12 +60,18 @@ class MonthViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("MonthViewcontroller viewWillAppear")
+        setBudget(date: date)
+        calenders[1].reloadCalender()
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = MyColors.lightgray
+        
+        
+        
         
         budgetButton.addTarget(self, action: #selector(didTapBudgetButton), for: .touchUpInside)
         
@@ -75,11 +84,13 @@ class MonthViewController: UIViewController {
         getDateBudget()
         
         setupCalenders()
-        setBudget(date: date)
+        
         scrollView.delegate = self
         
         print(year, month)
     }
+    
+    
     
     private func setBudget(date: Date) {
         
@@ -107,7 +118,7 @@ class MonthViewController: UIViewController {
             
             for data in datas {
                 thisMonthBudget -= data.price
-                print("성공쓰")
+//                print("성공쓰")
             }
             
         }
@@ -260,21 +271,31 @@ class MonthViewController: UIViewController {
     }
     
     
+    
+    
 }
 
 extension MonthViewController: CustomCalendarDelegate {
     func presentMonthCostView(date: Date) {
         let monthCostViewController = MonthCostViewController()
         monthCostViewController.date = date
+        monthCostViewController.delegate = self
         present(monthCostViewController, animated: true)
         
     }
     
     
     
-    
 }
 
+extension MonthViewController: MonthCostViewControllerDelegate {
+    func reLoadCalendar() {
+        setBudget(date: date)
+        calenders[1].reloadCalender()
+    }
+    
+    
+}
 
 
 
@@ -287,6 +308,9 @@ extension MonthViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let index = scrollView.contentOffset.x / scrollView.bounds.width
         
+       
+        
+        
         if index == 0 {
             print("-")
             month -= 1
@@ -296,11 +320,14 @@ extension MonthViewController: UIScrollViewDelegate {
             if let date = comfonents.date {
                 setBudget(date: date)
             }
-            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                scrollView.contentOffset.x = scrollView.bounds.width
+                self.setCalendars(year: self.year, month: self.month - 1, calendar: self.calenders[0])
+            }
             setCalendars(year: year, month: month, calendar: calenders[1])
-            scrollView.contentOffset.x = scrollView.bounds.width
-            setCalendars(year: year, month: month - 1, calendar: calenders[0])
-            setCalendars(year: year, month: month - 1, calendar: calenders[2])
+            setCalendars(year: year, month: month + 1, calendar: calenders[2])
+            
+            
         }
         else if index == 2 {
             print("+")
@@ -311,10 +338,13 @@ extension MonthViewController: UIScrollViewDelegate {
             if let date = comfonents.date {
                 setBudget(date: date)
             }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                scrollView.contentOffset.x = scrollView.bounds.width
+                self.setCalendars(year: self.year, month: self.month + 1, calendar: self.calenders[2])
+            }
             setCalendars(year: year, month: month, calendar: calenders[1])
-            scrollView.contentOffset.x = scrollView.bounds.width
-            setCalendars(year: year, month: month + 1, calendar: calenders[0])
-            setCalendars(year: year, month: month + 1, calendar: calenders[2])
+            setCalendars(year: year, month: month - 1, calendar: calenders[0])
             
         }
         

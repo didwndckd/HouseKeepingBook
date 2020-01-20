@@ -65,12 +65,13 @@ class DateCell: JTACDayCell {
             stateImageView.tintColor = MyColors.red
          }
          */
-        stateImageView.image = UIImage(systemName: "hand.thumbsup")
-        stateImageView.tintColor = MyColors.green
+//        stateImageView.image = UIImage(systemName: "hand.thumbsup")
+        stateImageView.tintColor = .white
         stateImageView.contentMode = .scaleAspectFit
         stateImageView.translatesAutoresizingMaskIntoConstraints = false
         stateImageView.topAnchor.constraint(equalTo: todayLabel.bottomAnchor).isActive = true
         stateImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        stateImageView.isHidden = true
     }
     
     
