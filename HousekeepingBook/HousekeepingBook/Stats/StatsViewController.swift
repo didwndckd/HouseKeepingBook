@@ -18,6 +18,7 @@ class StatsViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let tagListView = UITableView()
     private var textAutolayout: NSLayoutConstraint!
+    private let segmented = UISegmentedControl(items: ["Tag", "Day"])
     
     // MARK: - <TagData> 넣는 곳
     private var tagData: [String: Int] = [:]
@@ -32,9 +33,15 @@ class StatsViewController: UIViewController {
         }
     }
     
+    private var dailyData: [Date: Int] = [:]
+    private var dailyKeys: [Date] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        
+        
         baseUI()
         layout()
 //        makeCostByTag(data: tagData)
@@ -48,6 +55,7 @@ class StatsViewController: UIViewController {
         setData()
         tagListView.reloadData()
     }
+    
     
     func setData() {
         
@@ -69,13 +77,21 @@ class StatsViewController: UIViewController {
             for i in 1...count {
 //                print(year, month, i)
                 let compornent = DateComponents(calendar: calendar, year: year, month: month, day: i)
-                print(compornent.date)
+                
                 guard let date = compornent.date else {
                     print("dateCompornents Error")
                     return}
                 let datas = DataPicker.shared.getData(date: date)
                 for data in datas {
                     print(data)
+                    
+                    if let currentDailyPrice = dailyData[date] {
+                        dailyData[date] = currentDailyPrice + data.price
+                    }else {
+                        dailyData[date] = data.price
+                    }
+                    
+                    
                     if let currentPrice = tagData[data.tag] {
                         tagData[data.tag] = currentPrice + data.price
                         
@@ -87,6 +103,11 @@ class StatsViewController: UIViewController {
             }
             
         print(tagData)
+        print("----------------------------------------------------------------------")
+        print(dailyData)
+        
+        dailyKeys = dailyData.keys.sorted()
+        
         
         for (key, value) in tagData {
             tagArray.append((key, value))
@@ -142,10 +163,23 @@ class StatsViewController: UIViewController {
         tagListView.rowHeight = 80
         tagListView.register(StatsCell.self, forCellReuseIdentifier: "Cell")
         tagListView.separatorStyle = .none
+        
+        view.addSubview(segmented)
+        segmented.selectedSegmentIndex = 0
+        segmented.addTarget(self, action: #selector(didTapSegment(_:)), for: .valueChanged)
+        
+        
+    }
+    
+    @objc private func didTapSegment(_ sender: UISegmentedControl) {
+        print("didTapSegment")
+        tagListView.reloadData()
     }
     
     
     private func layout() {
+        
+        segmented.translatesAutoresizingMaskIntoConstraints = false
         infoText.translatesAutoresizingMaskIntoConstraints = false
         presentCostView.translatesAutoresizingMaskIntoConstraints = false
         presentCostText.translatesAutoresizingMaskIntoConstraints = false
@@ -171,7 +205,12 @@ class StatsViewController: UIViewController {
         textAutolayout = presentCostText.topAnchor.constraint(equalTo: guideLine.bottomAnchor)
         textAutolayout.isActive = true
         
-        tagListView.topAnchor.constraint(equalTo: guideLine.bottomAnchor).isActive = true
+        
+        segmented.topAnchor.constraint(equalTo: guideLine.bottomAnchor, constant: 16).isActive = true
+        segmented.centerXAnchor.constraint(equalTo: safeLayout.centerXAnchor).isActive = true
+        segmented.widthAnchor.constraint(equalTo: safeLayout.widthAnchor, multiplier: 0.5).isActive = true
+        
+        tagListView.topAnchor.constraint(equalTo: segmented.bottomAnchor, constant: 16).isActive = true
         tagListView.leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor).isActive = true
         tagListView.trailingAnchor.constraint(equalTo: safeLayout.trailingAnchor).isActive = true
         tagListView.bottomAnchor.constraint(equalTo: safeLayout.bottomAnchor).isActive = true
@@ -241,7 +280,11 @@ extension StatsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! StatsCell
+        
+        if segmented.selectedSegmentIndex == 0 {
+        
         let data = tagArray[indexPath.row]
         let color = TagData.tags[data.tag]?.color
         let tagName = TagData.tags[data.tag]?.name
@@ -260,6 +303,25 @@ extension StatsViewController: UITableViewDataSource {
         cell.guageView.backgroundColor = color
         
         return cell
+        }
+        else {
+            
+            let date = dailyKeys[indexPath.row]
+            let price = dailyData[date]
+            cell.tagLabel.text = DataPicker.shared.setFormatter(date: date, format: "dd")
+            
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            let priceText = formatter.string(from: price! as NSNumber)
+            
+            cell.priceLabel.text = priceText
+            let percent = CGFloat(price!) / CGFloat(presentCost)
+            cell.percent = percent
+            cell.tagView.backgroundColor = MyColors.yellow
+            cell.guageView.backgroundColor = MyColors.yellow
+            
+            return cell
+        }
     }
     
     
@@ -267,6 +329,14 @@ extension StatsViewController: UITableViewDataSource {
 
 extension StatsViewController: UITableViewDelegate {
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if segmented.selectedSegmentIndex == 1 {
+            let monthCostViewController = MonthCostViewController()
+            let date = dailyKeys[indexPath.row]
+            monthCostViewController.date = date
+            present(monthCostViewController, animated: true)
+        }
+    }
     
     
     
