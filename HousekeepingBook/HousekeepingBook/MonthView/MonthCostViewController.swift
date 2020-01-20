@@ -185,7 +185,25 @@ class MonthCostViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        print("viewWillLayoutSubView")
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         checkButton.layer.cornerRadius = checkButton.bounds.width / 2
+    }
+    
+    
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
+        
+    }
+    
+    
+    override func viewLayoutMarginsDidChange() {
+        super.viewLayoutMarginsDidChange()
+        
     }
   
   private struct Standard {
