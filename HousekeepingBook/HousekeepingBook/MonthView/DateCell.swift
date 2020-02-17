@@ -13,7 +13,8 @@ class DateCell: JTACDayCell {
     let dateLabel = UILabel()
     let selectedView = SelectedView()
     let todayLabel = UILabel()
-    let stateImageView = UIImageView()
+//    let stateImageView = UIImageView()
+    let stateView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,7 +34,8 @@ class DateCell: JTACDayCell {
         contentView.addSubview(selectedView)
         contentView.addSubview(dateLabel)
         contentView.addSubview(todayLabel)
-        contentView.addSubview(stateImageView)
+//        contentView.addSubview(stateImageView)
+        contentView.addSubview(stateView)
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
@@ -66,12 +68,22 @@ class DateCell: JTACDayCell {
          }
          */
 //        stateImageView.image = UIImage(systemName: "hand.thumbsup")
-        stateImageView.tintColor = .white
-        stateImageView.contentMode = .scaleAspectFit
-        stateImageView.translatesAutoresizingMaskIntoConstraints = false
-        stateImageView.topAnchor.constraint(equalTo: todayLabel.bottomAnchor).isActive = true
-        stateImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-        stateImageView.isHidden = true
+        
+//        stateImageView.tintColor = .white
+//        stateImageView.contentMode = .scaleAspectFit
+//        stateImageView.translatesAutoresizingMaskIntoConstraints = false
+//        stateImageView.topAnchor.constraint(equalTo: todayLabel.bottomAnchor).isActive = true
+//        stateImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+//        stateImageView.isHidden = true
+        
+        stateView.translatesAutoresizingMaskIntoConstraints = false
+        let stateMargin: CGFloat = 2
+        
+        stateView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: stateMargin).isActive = true
+        stateView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -stateMargin).isActive = true
+        stateView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: stateMargin * 2).isActive = true
+        stateView.heightAnchor.constraint(equalToConstant: stateMargin).isActive = true
+        
     }
     
     

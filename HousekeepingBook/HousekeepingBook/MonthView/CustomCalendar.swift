@@ -118,7 +118,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
     //
     func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {
         let formatter = DateFormatter()
-        formatter.dateFormat = "y.MMM"
+        formatter.dateFormat = "y.MM"
         
         let header = calendar.dequeueReusableJTAppleSupplementaryView(
             withReuseIdentifier: DateHeader.identifier,
@@ -145,22 +145,22 @@ extension CustomCalendar: JTACMonthViewDelegate {
                 totalConsum -= cost.price
             }
 
-            let goodState = "hand.thumbsup"
-            let badState = "hand.thumbsdown"
-            let simbole: String
+//            let goodState = "hand.thumbsup"
+//            let badState = "hand.thumbsdown"
+//            let simbole: String
             if totalConsum > 0 {
-                simbole = goodState
-                cell.stateImageView.tintColor = .green
+//                simbole = goodState
+                cell.stateView.backgroundColor = .green
             }else {
-                cell.stateImageView.tintColor = .systemPink
-                simbole = badState
+                cell.stateView.backgroundColor = .systemPink
+//                simbole = badState
             }
 
-            cell.stateImageView.isHidden = false
-            cell.stateImageView.image = UIImage(systemName: simbole)
+            cell.stateView.isHidden = false
+//            cell.stateImageView.image = UIImage(systemName: simbole)
 
         }else {
-            cell.stateImageView.isHidden = true
+            cell.stateView.isHidden = true
         }
         
         
@@ -224,7 +224,6 @@ extension CustomCalendar: JTACMonthViewDelegate {
         
        }
     private func handleCellSelected(cell: DateCell, cellState: CellState) {
-        
         if cellState.isSelected {
             cell.selectedView.isHidden = false
             

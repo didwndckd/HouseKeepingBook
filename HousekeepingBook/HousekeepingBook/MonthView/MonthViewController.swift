@@ -108,7 +108,7 @@ class MonthViewController: UIViewController {
         for day in 1...count {
             let yearStr = DataPicker.shared.setFormatter(date: date, format: "yyyy")
             let monthStr = DataPicker.shared.setFormatter(date: date, format: "MM")
-            let formatter = DateFormatter()
+//            let formatter = DateFormatter()
             
             guard let year = Int(yearStr), let month = Int(monthStr)  else {
                 return
