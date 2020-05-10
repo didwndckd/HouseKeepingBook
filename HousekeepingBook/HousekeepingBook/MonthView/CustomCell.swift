@@ -9,7 +9,7 @@
 import UIKit
 
 class CustomCell: UITableViewCell {
-  let iconView = UIImageView()
+  let iconView = UILabel()
   let titlelabel = UILabel()
   let priceLabel = UILabel()
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -17,9 +17,10 @@ class CustomCell: UITableViewCell {
     contentView.addSubview(iconView)
     contentView.addSubview(titlelabel)
     contentView.addSubview(priceLabel)
-    iconView.backgroundColor = .yellow
+    iconView.backgroundColor = MyColors.lightgray
     iconView.layer.cornerRadius = iconView.frame.width/2
     iconView.layer.masksToBounds = true
+    iconView.textAlignment = .center
     titlelabel.text = "지출 분류"
     titlelabel.font = UIFont.systemFont(ofSize: 15, weight: .light)
     priceLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
@@ -28,6 +29,8 @@ class CustomCell: UITableViewCell {
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+    
+    
   override func layoutSubviews() {
     super.layoutSubviews()
     let uiArr = [iconView, titlelabel, priceLabel]
@@ -36,12 +39,16 @@ class CustomCell: UITableViewCell {
       ui.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
     }
     iconView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
-    // iamge가 들어가면 없어도 되는 오토레이아웃
-    iconView.widthAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
-    iconView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
+    iconView.widthAnchor.constraint(equalTo: contentView.heightAnchor, constant: -8).isActive = true
+    iconView.heightAnchor.constraint(equalTo: contentView.heightAnchor, constant: -8).isActive = true
     titlelabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 10).isActive = true
     priceLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
+    
+    iconView.layer.cornerRadius = (frame.height / 2) - 4
+    
   }
+    
+    
   override func awakeFromNib() {
     super.awakeFromNib()
     // Initialization code
