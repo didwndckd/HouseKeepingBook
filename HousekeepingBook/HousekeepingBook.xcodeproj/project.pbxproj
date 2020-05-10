@@ -80,21 +80,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		31FAACEA23CF466B005FB8CD /* DayView */ = {
+		312C8D8424682D1800A68941 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				31A5E76A23D0D465002A149D /* CostDetailViewController.swift */,
-				A666F7FE23CCA7AD0069F0F6 /* DayViewController.swift */,
-				31FAACE623CF45B7005FB8CD /* DayCostViewController.swift */,
-				314B697323CF4D6A00A45F6E /* TagButton.swift */,
-				31E452FA23CFFC9000784BDA /* DayViewCell.swift */,
-				3117763C23D095A20058A8F7 /* TagButtonView.swift */,
-				3117763E23D095C30058A8F7 /* ExtensionUIView.swift */,
+				31CA2C8A23CEED8C005116D2 /* TagModel.swift */,
+				31CA2C8C23CEEE69005116D2 /* CostModel.swift */,
+				31320BF523CF132D005106B3 /* DataModel.swift */,
 			);
-			path = DayView;
+			path = Data;
 			sourceTree = "<group>";
 		};
-		31FAACEB23CF4698005FB8CD /* MonthView */ = {
+		312C8D8624682D5100A68941 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				A666F81023CCA85B0069F0F6 /* StatsViewController.swift */,
+				31E123E423D4A29000BDF9C0 /* StatsCell.swift */,
+			);
+			path = Stats;
+			sourceTree = "<group>";
+		};
+		312C8D8724682D9200A68941 /* MonthView */ = {
 			isa = PBXGroup;
 			children = (
 				A666F81223CCB1A80069F0F6 /* BudgetViewController.swift */,
@@ -109,13 +114,51 @@
 			path = MonthView;
 			sourceTree = "<group>";
 		};
-		31FAACEC23CF46AD005FB8CD /* Stats */ = {
+		312C8D8824682DB800A68941 /* DayView */ = {
 			isa = PBXGroup;
 			children = (
-				A666F81023CCA85B0069F0F6 /* StatsViewController.swift */,
-				31E123E423D4A29000BDF9C0 /* StatsCell.swift */,
+				31A5E76A23D0D465002A149D /* CostDetailViewController.swift */,
+				A666F7FE23CCA7AD0069F0F6 /* DayViewController.swift */,
+				31FAACE623CF45B7005FB8CD /* DayCostViewController.swift */,
+				314B697323CF4D6A00A45F6E /* TagButton.swift */,
+				31E452FA23CFFC9000784BDA /* DayViewCell.swift */,
+				3117763C23D095A20058A8F7 /* TagButtonView.swift */,
 			);
-			path = Stats;
+			path = DayView;
+			sourceTree = "<group>";
+		};
+		312C8D8924682DE000A68941 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				312C8D8C24682E1300A68941 /* Color */,
+				312C8D8A24682DE600A68941 /* Extension */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		312C8D8A24682DE600A68941 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				3117763E23D095C30058A8F7 /* ExtensionUIView.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		312C8D8B24682DFD00A68941 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A666F7FA23CCA7AD0069F0F6 /* AppDelegate.swift */,
+				A666F7FC23CCA7AD0069F0F6 /* SceneDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		312C8D8C24682E1300A68941 /* Color */ = {
+			isa = PBXGroup;
+			children = (
+				31FAACEF23CF47A3005FB8CD /* ColorZip.swift */,
+			);
+			path = Color;
 			sourceTree = "<group>";
 		};
 		44BA88F8CD8A645CB5A5CE2C /* Frameworks */ = {
@@ -133,17 +176,6 @@
 				055852CD2F88CF827E05CB74 /* Pods-HousekeepingBook.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		A619F8B923CEC45B00F96F0B /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				31CA2C8A23CEED8C005116D2 /* TagModel.swift */,
-				31CA2C8C23CEEE69005116D2 /* CostModel.swift */,
-				31320BF523CF132D005106B3 /* DataModel.swift */,
-			);
-			name = Data;
-			path = ..;
 			sourceTree = "<group>";
 		};
 		A666F7EE23CCA7AD0069F0F6 = {
@@ -167,16 +199,15 @@
 		A666F7F923CCA7AD0069F0F6 /* HousekeepingBook */ = {
 			isa = PBXGroup;
 			children = (
-				31FAACEC23CF46AD005FB8CD /* Stats */,
-				31FAACEB23CF4698005FB8CD /* MonthView */,
-				31FAACEA23CF466B005FB8CD /* DayView */,
-				A619F8B923CEC45B00F96F0B /* Data */,
-				A666F7FA23CCA7AD0069F0F6 /* AppDelegate.swift */,
-				A666F7FC23CCA7AD0069F0F6 /* SceneDelegate.swift */,
+				312C8D8B24682DFD00A68941 /* App */,
+				312C8D8924682DE000A68941 /* Util */,
+				312C8D8824682DB800A68941 /* DayView */,
+				312C8D8724682D9200A68941 /* MonthView */,
+				312C8D8624682D5100A68941 /* Stats */,
+				312C8D8424682D1800A68941 /* Data */,
 				A666F80323CCA7AF0069F0F6 /* Assets.xcassets */,
 				A666F80523CCA7AF0069F0F6 /* LaunchScreen.storyboard */,
 				A666F80823CCA7AF0069F0F6 /* Info.plist */,
-				31FAACEF23CF47A3005FB8CD /* ColorZip.swift */,
 			);
 			path = HousekeepingBook;
 			sourceTree = "<group>";
