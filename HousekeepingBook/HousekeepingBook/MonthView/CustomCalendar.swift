@@ -118,7 +118,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
     //
     func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {
         let formatter = DateFormatter()
-        formatter.dateFormat = "y.MM"
+        formatter.dateFormat = "y.MMM"
         
         let header = calendar.dequeueReusableJTAppleSupplementaryView(
             withReuseIdentifier: DateHeader.identifier,
@@ -227,7 +227,7 @@ extension CustomCalendar: JTACMonthViewDelegate {
         if cellState.isSelected {
             cell.selectedView.isHidden = false
             
-            guard selectDay else { return selectDay = true }
+            guard dailyBudget != nil && selectDay else { return selectDay = true }
             delegate?.presentMonthCostView(date: cellState.date)
             
             

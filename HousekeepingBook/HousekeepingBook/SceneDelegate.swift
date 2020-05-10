@@ -33,6 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [dayVC, monthVC, statsVC]
+        tabBarController.selectedIndex = 1
         
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = tabBarController

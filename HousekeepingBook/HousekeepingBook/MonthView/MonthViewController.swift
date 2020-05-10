@@ -359,6 +359,7 @@ extension MonthViewController: UIScrollViewDelegate {
 extension MonthViewController: BudgitViewControllerDelegate {
     func setBudget(budget: Int) {
         self.budget = budget
+        calenders[1].reloadCalender()
     }
     
     
