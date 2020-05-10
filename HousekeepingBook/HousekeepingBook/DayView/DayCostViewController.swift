@@ -8,179 +8,248 @@
 
 import UIKit
 
+private struct Standard {
+    static let spaceTB: CGFloat = 50
+    static let spaceLR: CGFloat = 30
+}
+
+protocol DayCostViewControllerDelegat: class {
+    func checkAction(cost: CostModel)
+}
+
 // 일별 추가버튼 클릭시
 class DayCostViewController: UIViewController {
-  
-  // MARK: - CollectionViewMetric
-  
-  private enum Metric {
-    static let lineSpacing: CGFloat = 30
-    static let itemSpacing: CGFloat = 3
-    static let nextOffSet: CGFloat = 40
     
-    static let numberOfLine: CGFloat = 3
-    static let numberOfItem: CGFloat = 3
+    weak var delegate: DayCostViewControllerDelegat?
+    var tagKey: TagKey?
     
-    // 컬렉션뷰의 안쪽의 간격 (틀?)
-    static let inset: UIEdgeInsets = .init(top: 10, left: 40, bottom: 10, right:10 )
-    
-    static var horizontalPadding: CGFloat {
-      return Metric.inset.left + Metric.inset.right
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+       self.view.endEditing(true)
     }
     
-    static var verticalPadding: CGFloat {
-      return Metric.inset.top + Metric.inset.bottom
+    // MARK: - Property
+    var priceTextFieldTopAnchor: NSLayoutConstraint?
+    
+    lazy var priceTextField: UITextField = {
+        let textField = UITextField()
+        textField.delegate = self
+        textField.placeholder = "사용 금액"
+        textField.borderStyle = .none
+        textField.keyboardType = .numberPad
+        textField.font = UIFont.systemFont(ofSize: 30)
+        textField.textAlignment = .center
+        return textField
+    }()
+    
+    private var priceTextLine: UIView = {
+        let moneyLine = UIView()
+        moneyLine.backgroundColor = MyColors.yellow
+        return moneyLine
+    }()
+    
+    private lazy var tagButtonView: TagButtonView = {
+        let temp = TagButtonView(buttonSize: 0, fontSize: 0, cornerRadius: 0)
+        temp.delegate = self
+        return temp
+    }()
+    
+    private var checkButton: UIButton = {
+        let checkButton = UIButton()
+        checkButton.setTitle("✓", for: .normal)
+        checkButton.titleLabel?.font = UIFont.systemFont(ofSize: Standard.spaceTB)
+        checkButton.backgroundColor = MyColors.yellow
+        checkButton.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
+        return checkButton
+    }()
+    
+    lazy private var memoTextField: UITextField = {
+        let memoTextField = UITextField()
+        memoTextField.borderStyle = .none
+        memoTextField.placeholder = "  MEMO - 최대 10자까지"
+        memoTextField.delegate = self
+        return memoTextField
+    }()
+    
+    lazy private var memoTextLine: UILabel = {
+        let memoLine = UILabel()
+        memoLine.backgroundColor = ColorZip.lightGray
+        return memoLine
+    }()
+    
+    private var memoView: UIView = {
+        let memoView = UIView()
+        memoView.backgroundColor = #colorLiteral(red: 0.9215686275, green: 0.9215686275, blue: 0.9215686275, alpha: 1)
+        return memoView
+    }()
+    
+    // ₩
+    let sumLabel: UILabel = {
+        let sumLabel = UILabel()
+        sumLabel.backgroundColor = .white
+        sumLabel.textColor = ColorZip.lightGray
+        sumLabel.text = "₩"
+        sumLabel.textAlignment = .left
+        sumLabel.font = UIFont.systemFont(ofSize: 35)
+        return sumLabel
+    }()
+    
+    // MARK: - View Life Cycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        
+        selectedTagViewLayout()
+        
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyBoardWillHideNo),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
+        
     }
-  }
-  
-  // MARK: - Property
-  
-  lazy var textField: UITextField = {
-    let textField = UITextField()
-    textField.delegate = self
-    textField.borderStyle = .roundedRect
-    textField.keyboardType = .numberPad
-    textField.font = UIFont(name: "Arial", size: 28)
-    textField.textAlignment = .center
-    return textField
-  }()
-  
-  lazy private var collectionView: UICollectionView = {
-    // layout
-    let layout = UICollectionViewFlowLayout()
-    // 가로, 세로로 보여짐
-    layout.scrollDirection = .horizontal
     
-    // view
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    collectionView.backgroundColor = .white
-    collectionView.dataSource = self
-    collectionView.delegate = self
-    collectionView.register(TagCollectionViewCell.self, forCellWithReuseIdentifier: TagCollectionViewCell.identifier)
+    @objc func keyboardWillShow() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.priceTextFieldTopAnchor?.constant = 5
+            self.view.layoutIfNeeded()
+        })
+        
+    }
     
-    return collectionView
-  }()
-  
-  lazy private var checkButton: UIButton = {
-    let checkButton = UIButton()
-    checkButton.setTitle(" Check ", for: .normal)
-    checkButton.setTitleColor(.white, for: .normal)
-    checkButton.backgroundColor = #colorLiteral(red: 0.5056351423, green: 0.6657808423, blue: 1, alpha: 1)
-    checkButton.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
-    checkButton.titleLabel?.font = UIFont(name: "Arial", size: 25)
-    checkButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
-    checkButton.layer.cornerRadius = 10
-    return checkButton
-  }()
-  
-  
-  
-  
-  // MARK: - View Life Cycle
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    view.backgroundColor = .white
+    @objc func keyBoardWillHideNo() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.priceTextFieldTopAnchor?.constant = Standard.spaceTB
+            self.view.layoutIfNeeded()
+        })
+       
+    }
     
-    configureCollectionView()
-  }
-  
-  private func configureCollectionView() {
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        checkButton.layer.cornerRadius = checkButton.frame.width/2
+    }
     
-    view.addSubview(collectionView)
-    collectionView.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
-      collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-//      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      collectionView.heightAnchor.constraint(equalToConstant: 300),
-      collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-    ])
+    private func selectedTagViewLayout() {
+        
+        let safeArea = view.safeAreaLayoutGuide
+        
+        view.addSubview(priceTextField)
+        priceTextField.translatesAutoresizingMaskIntoConstraints = false
+        priceTextFieldTopAnchor = priceTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: Standard.spaceTB)
+        priceTextFieldTopAnchor?.isActive = true
+        NSLayoutConstraint.activate([
+            priceTextField.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            priceTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Standard.spaceLR),
+            priceTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Standard.spaceLR)
+        ])
+        
+        view.addSubview(priceTextLine)
+        priceTextLine.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            priceTextLine.topAnchor.constraint(equalTo: priceTextField.bottomAnchor, constant: 3),
+            priceTextLine.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            priceTextLine.widthAnchor.constraint(equalTo: priceTextField.widthAnchor),
+            priceTextLine.heightAnchor.constraint(equalToConstant: 3)
+        ])
+        
+        view.addSubview(tagButtonView)
+        tagButtonView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tagButtonView.topAnchor.constraint(equalTo: priceTextLine.bottomAnchor, constant: Standard.spaceTB),
+            tagButtonView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Standard.spaceLR),
+            tagButtonView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Standard.spaceLR),
+        ])
+        
+        view.addSubview(memoTextField)
+        memoTextField.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            memoTextField.topAnchor.constraint(equalTo: tagButtonView.bottomAnchor, constant: Standard.spaceLR),
+            memoTextField.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            memoTextField.widthAnchor.constraint(equalTo: priceTextLine.widthAnchor),
+            memoTextField.heightAnchor.constraint(equalToConstant: Standard.spaceLR)
+        ])
+        
+        view.addSubview(memoTextLine)
+        memoTextLine.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            memoTextLine.topAnchor.constraint(equalTo: memoTextField.bottomAnchor),
+            memoTextLine.leadingAnchor.constraint(equalTo: memoTextField.leadingAnchor),
+            memoTextLine.trailingAnchor.constraint(equalTo: memoTextField.trailingAnchor),
+            memoTextLine.heightAnchor.constraint(equalToConstant: 2)
+        ])
+        
+        view.addSubview(checkButton)
+        checkButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            checkButton.topAnchor.constraint(equalTo: memoTextLine.bottomAnchor, constant: Standard.spaceLR),
+            checkButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            checkButton.widthAnchor.constraint(equalTo: checkButton.heightAnchor)
+        ])
+    }
     
-    view.addSubview(textField)
-    textField.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-      textField.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-      textField.widthAnchor.constraint(equalToConstant: 300),
-      textField.heightAnchor.constraint(equalToConstant: 50)
-    ])
-    
-    view.addSubview(checkButton)
-    checkButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      checkButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 30),
-      checkButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-      //checkButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-      //checkButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -100),
-    ])
-    
-    
-  }
-
-      @objc private func didTapButton(_ sender: UIButton) {
+    @objc private func didTapButton(_ sender: TagButton) {
+        guard let tag = tagKey else {
+            appearAlert()
+            return
+        }
+        let memo = memoTextField.text ?? ""
+        guard let money = priceTextField.text, let price = Int(money) else {
+            appearAlert()
+            return
+            
+        }
+        
+        let cost = CostModel(tag: tag.rawValue, memo: memo, price: price)
+        delegate?.checkAction(cost: cost)
         dismiss(animated: true)
-      }
-  
+    }
+    
+    private func appearAlert() {
+        let alertController = UIAlertController(title: "금액 또는 태그를 입력해주세요.",
+                                                message: "",
+                                                preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true)
+    }
 }
-
 
 // MARK: - UICollectionViewDataSource
-
-extension DayCostViewController: UICollectionViewDataSource {
-  
-  func numberOfSections(in collectionView: UICollectionView) -> Int { return 1 }
-  
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { return TagData.tags.count }
-  
-  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.identifier, for: indexPath) as? TagCollectionViewCell else { fatalError() }
-    let key = TagData.tagHeads[indexPath.row]
-    guard let tagModel = TagData.tags[key] else { return cell}
-    cell.configure(tag: tagModel)
-    
-    return cell
-  }
-}
-
-extension DayCostViewController: UICollectionViewDelegateFlowLayout {
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    let lineSpacing = Metric.lineSpacing * (Metric.numberOfLine - 1)
-    let horizontalPadding = Metric.inset.left + Metric.inset.right + Metric.nextOffSet
-    
-    let itemSpacing = Metric.itemSpacing * (Metric.numberOfItem - 1)
-    let verticalPadding = Metric.inset.top + Metric.inset.bottom
-    
-    let width = (collectionView.frame.width - lineSpacing - horizontalPadding) / Metric.numberOfLine
-    let height = (collectionView.frame.height - itemSpacing - verticalPadding) / Metric.numberOfItem
-    
-    return CGSize(width: width.rounded(.down), height: height.rounded(.down))
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-    return Metric.lineSpacing
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-    return Metric.itemSpacing
-  }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-    return Metric.inset
-  }
-  
-  // 버튼 클릭시 해당셀에 뭐가눌린지 알 수 있음
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    let key = TagData.tagHeads[indexPath.row]
-    guard let tagModel = TagData.tags[key] else { return }
-    let tagData = tagModel
-    print(tagData.name)
-  }
-  
-}
-
 extension DayCostViewController: UITextFieldDelegate {
-  
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if string.isEmpty {
+            return true
+        }
+        if textField == memoTextField {
+            return true
+        } else if textField == self.priceTextField {
+            if let _ = Int(string) {
+                return true
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
 }
 
+// MARK: - 첫번째 버튼 바로 안눌리는 거 업스한테 물어봐야 함
+extension DayCostViewController: TagButtonViewDelegate {
+    func tagButtonsDidTap(tagKey: TagKey) {
+        self.tagKey = tagKey
+    }
+}

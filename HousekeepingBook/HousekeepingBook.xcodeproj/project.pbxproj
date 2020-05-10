@@ -8,14 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		09CB2127925DF532A45BD484 /* Pods_HousekeepingBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DA6E2DAD61B34A6C89DCEB9 /* Pods_HousekeepingBook.framework */; };
+		3117763D23D095A20058A8F7 /* TagButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3117763C23D095A20058A8F7 /* TagButtonView.swift */; };
+		3117763F23D095C30058A8F7 /* ExtensionUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3117763E23D095C30058A8F7 /* ExtensionUIView.swift */; };
+		3117764123D0B2660058A8F7 /* CustomCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3117764023D0B2660058A8F7 /* CustomCalendar.swift */; };
 		31320BF623CF132D005106B3 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31320BF523CF132D005106B3 /* DataModel.swift */; };
 		31320BF823CF3F89005106B3 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31320BF723CF3F89005106B3 /* DateHeader.swift */; };
-		31320BFA23CF4408005106B3 /* TagCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31320BF923CF4408005106B3 /* TagCollectionViewCell.swift */; };
 		314B697423CF4D6A00A45F6E /* TagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314B697323CF4D6A00A45F6E /* TagButton.swift */; };
+		31A5E76B23D0D465002A149D /* CostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A5E76A23D0D465002A149D /* CostDetailViewController.swift */; };
 		31CA2C8723CE2740005116D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA2C8623CE2740005116D2 /* DateCell.swift */; };
 		31CA2C8923CEDA2F005116D2 /* SelectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA2C8823CEDA2F005116D2 /* SelectedView.swift */; };
 		31CA2C8B23CEED8C005116D2 /* TagModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA2C8A23CEED8C005116D2 /* TagModel.swift */; };
 		31CA2C8D23CEEE69005116D2 /* CostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CA2C8C23CEEE69005116D2 /* CostModel.swift */; };
+		31E123E523D4A29000BDF9C0 /* StatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E123E423D4A29000BDF9C0 /* StatsCell.swift */; };
+		31E452FB23CFFC9000784BDA /* DayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E452FA23CFFC9000784BDA /* DayViewCell.swift */; };
 		31FAACE523CF45A0005FB8CD /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FAACE423CF45A0005FB8CD /* CustomCell.swift */; };
 		31FAACE723CF45B7005FB8CD /* DayCostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FAACE623CF45B7005FB8CD /* DayCostViewController.swift */; };
 		31FAACE923CF45C3005FB8CD /* MonthCostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FAACE823CF45C3005FB8CD /* MonthCostViewController.swift */; };
@@ -33,14 +38,19 @@
 /* Begin PBXFileReference section */
 		055852CD2F88CF827E05CB74 /* Pods-HousekeepingBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HousekeepingBook.release.xcconfig"; path = "Target Support Files/Pods-HousekeepingBook/Pods-HousekeepingBook.release.xcconfig"; sourceTree = "<group>"; };
 		0DA6E2DAD61B34A6C89DCEB9 /* Pods_HousekeepingBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HousekeepingBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3117763C23D095A20058A8F7 /* TagButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagButtonView.swift; sourceTree = "<group>"; };
+		3117763E23D095C30058A8F7 /* ExtensionUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionUIView.swift; sourceTree = "<group>"; };
+		3117764023D0B2660058A8F7 /* CustomCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendar.swift; sourceTree = "<group>"; };
 		31320BF523CF132D005106B3 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		31320BF723CF3F89005106B3 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
-		31320BF923CF4408005106B3 /* TagCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCollectionViewCell.swift; sourceTree = "<group>"; };
 		314B697323CF4D6A00A45F6E /* TagButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagButton.swift; sourceTree = "<group>"; };
+		31A5E76A23D0D465002A149D /* CostDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CostDetailViewController.swift; sourceTree = "<group>"; };
 		31CA2C8623CE2740005116D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		31CA2C8823CEDA2F005116D2 /* SelectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedView.swift; sourceTree = "<group>"; };
 		31CA2C8A23CEED8C005116D2 /* TagModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagModel.swift; sourceTree = "<group>"; };
 		31CA2C8C23CEEE69005116D2 /* CostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostModel.swift; sourceTree = "<group>"; };
+		31E123E423D4A29000BDF9C0 /* StatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsCell.swift; sourceTree = "<group>"; };
+		31E452FA23CFFC9000784BDA /* DayViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayViewCell.swift; sourceTree = "<group>"; };
 		31FAACE423CF45A0005FB8CD /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		31FAACE623CF45B7005FB8CD /* DayCostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayCostViewController.swift; sourceTree = "<group>"; };
 		31FAACE823CF45C3005FB8CD /* MonthCostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonthCostViewController.swift; sourceTree = "<group>"; };
@@ -73,10 +83,13 @@
 		31FAACEA23CF466B005FB8CD /* DayView */ = {
 			isa = PBXGroup;
 			children = (
+				31A5E76A23D0D465002A149D /* CostDetailViewController.swift */,
 				A666F7FE23CCA7AD0069F0F6 /* DayViewController.swift */,
 				31FAACE623CF45B7005FB8CD /* DayCostViewController.swift */,
-				31320BF923CF4408005106B3 /* TagCollectionViewCell.swift */,
 				314B697323CF4D6A00A45F6E /* TagButton.swift */,
+				31E452FA23CFFC9000784BDA /* DayViewCell.swift */,
+				3117763C23D095A20058A8F7 /* TagButtonView.swift */,
+				3117763E23D095C30058A8F7 /* ExtensionUIView.swift */,
 			);
 			path = DayView;
 			sourceTree = "<group>";
@@ -87,6 +100,7 @@
 				A666F81223CCB1A80069F0F6 /* BudgetViewController.swift */,
 				A666F80E23CCA83B0069F0F6 /* MonthViewController.swift */,
 				31FAACE823CF45C3005FB8CD /* MonthCostViewController.swift */,
+				3117764023D0B2660058A8F7 /* CustomCalendar.swift */,
 				31FAACE423CF45A0005FB8CD /* CustomCell.swift */,
 				31320BF723CF3F89005106B3 /* DateHeader.swift */,
 				31CA2C8623CE2740005116D2 /* DateCell.swift */,
@@ -99,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				A666F81023CCA85B0069F0F6 /* StatsViewController.swift */,
+				31E123E423D4A29000BDF9C0 /* StatsCell.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -282,21 +297,26 @@
 			files = (
 				314B697423CF4D6A00A45F6E /* TagButton.swift in Sources */,
 				31FAACE723CF45B7005FB8CD /* DayCostViewController.swift in Sources */,
+				3117764123D0B2660058A8F7 /* CustomCalendar.swift in Sources */,
 				31CA2C8B23CEED8C005116D2 /* TagModel.swift in Sources */,
 				31FAACF023CF47A3005FB8CD /* ColorZip.swift in Sources */,
 				A666F7FF23CCA7AD0069F0F6 /* DayViewController.swift in Sources */,
 				31320BF623CF132D005106B3 /* DataModel.swift in Sources */,
 				31CA2C8923CEDA2F005116D2 /* SelectedView.swift in Sources */,
-				31320BFA23CF4408005106B3 /* TagCollectionViewCell.swift in Sources */,
 				31FAACE923CF45C3005FB8CD /* MonthCostViewController.swift in Sources */,
+				3117763F23D095C30058A8F7 /* ExtensionUIView.swift in Sources */,
 				A666F81323CCB1A80069F0F6 /* BudgetViewController.swift in Sources */,
 				31CA2C8D23CEEE69005116D2 /* CostModel.swift in Sources */,
 				31320BF823CF3F89005106B3 /* DateHeader.swift in Sources */,
+				31E452FB23CFFC9000784BDA /* DayViewCell.swift in Sources */,
+				31A5E76B23D0D465002A149D /* CostDetailViewController.swift in Sources */,
+				3117763D23D095A20058A8F7 /* TagButtonView.swift in Sources */,
 				31CA2C8723CE2740005116D2 /* DateCell.swift in Sources */,
 				A666F80F23CCA83B0069F0F6 /* MonthViewController.swift in Sources */,
 				A666F7FB23CCA7AD0069F0F6 /* AppDelegate.swift in Sources */,
 				A666F81123CCA85B0069F0F6 /* StatsViewController.swift in Sources */,
 				31FAACE523CF45A0005FB8CD /* CustomCell.swift in Sources */,
+				31E123E523D4A29000BDF9C0 /* StatsCell.swift in Sources */,
 				A666F7FD23CCA7AD0069F0F6 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
