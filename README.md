@@ -22,7 +22,7 @@
 
 ## Implementation
 
-<img src = "https://github.com/JoongChangYang/HouseKeepingBook/assets/housekeepingbook-x4.gif"></img>
+<img src = "https://github.com/JoongChangYang/HouseKeepingBook/blob/master/assets/housekeepingbook-x4.gif"></img>
 
 - 달력
   - JTAppleCalendar library를 이용하여 달력 구현
