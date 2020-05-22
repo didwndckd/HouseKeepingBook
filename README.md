@@ -18,7 +18,9 @@
   - 달력
   - 통계
 
+## Views
 
+<img src = "https://github.com/JoongChangYang/HouseKeepingBook/blob/master/assets/HouseKeepingBook_synthesize.png"></img>
 
 ## Implementation
 
