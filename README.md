@@ -20,11 +20,11 @@
 
 ## Views
 
-<img src = "https://github.com/JoongChangYang/HouseKeepingBook/blob/master/assets/HouseKeepingBook_synthesize.png"></img>
+<img src = "assets/HouseKeepingBook_synthesize.png"></img>
 
 ## Implementation
 
-<img src = "https://github.com/JoongChangYang/HouseKeepingBook/blob/master/assets/housekeepingbook-x4.gif"></img>
+<img src = "assets/housekeepingbook-x4.gif"></img>
 
 - 달력
   - JTAppleCalendar library를 이용하여 달력 구현
